@@ -30,6 +30,7 @@ public class MoneyExceptionHandler extends ResponseEntityExceptionHandler{
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, org.springframework.http.HttpHeaders headers, HttpStatus status, WebRequest request){
 		
 		String mensagemUsuario = ms.getMessage("mensagem.invalida", null, LocaleContextHolder.getLocale());
+		//String mensagemDesenvolvedor = ex.getCause() !=null ? ex.getCause().toString() : ex.toString();
 		String mensagemDesenvolvedor = ex.getCause().toString();
 		
 		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));

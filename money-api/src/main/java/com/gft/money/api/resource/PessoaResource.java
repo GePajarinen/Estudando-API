@@ -65,6 +65,12 @@ public class PessoaResource {
 	}
 	
 	
+	@PutMapping("/{codigo}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void atualizarAtivo(@PathVariable Long codigo, @RequestBody Boolean ativo) {
+		ps.atualizarAtivo(codigo, ativo);
+	}
+	
 	
 	
 	
