@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gft.money.api.event.RecursoCriadoEvent;
 import com.gft.money.api.model.Pessoa;
 import com.gft.money.api.repository.PessoaRepository;
+import com.gft.money.api.service.PessoaService;
 
 
 @RestController
@@ -31,6 +33,8 @@ public class PessoaResource {
 	@Autowired
 	private ApplicationEventPublisher pub;
 	
+	@Autowired
+	private PessoaService ps;
 		
 	@PostMapping
 	public ResponseEntity<Pessoa> cadastrarPessoa(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response) {
@@ -52,5 +56,37 @@ public class PessoaResource {
 	public void removerPessoa(@PathVariable Long codigo) {
 		pr.deleteById(codigo);
 	}
+	
+	@PutMapping("/{codigo}")
+	public ResponseEntity<Pessoa> atualizarPessoa(@PathVariable Long codigo, @Valid @RequestBody Pessoa pessoa){
+		Pessoa pessoaAtualizada = ps.atualizar(codigo, pessoa);
+		return ResponseEntity.ok(pessoaAtualizada);
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	}
