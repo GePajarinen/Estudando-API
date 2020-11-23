@@ -6,13 +6,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,12 +19,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.WebRequest;
 
 import com.gft.money.api.event.RecursoCriadoEvent;
 import com.gft.money.api.exceptionhandler.MoneyExceptionHandler.Erro;
 import com.gft.money.api.model.Lancamento;
 import com.gft.money.api.repository.LancamentoRepository;
+import com.gft.money.api.repository.filter.LancamentoFilter;
 import com.gft.money.api.service.LancamentoService;
 import com.gft.money.api.service.exception.PessoaInexistenteOuInativaException;
 
@@ -50,8 +47,8 @@ public class LancamentoResource {
 	
 	
 	@GetMapping
-	public List<Lancamento> listar() {
-		return lr.findAll();
+	public List<Lancamento> pesquisar(LancamentoFilter lancamentoFilter) {
+		return lr.filtrar(lancamentoFilter);
 	}
 	
 	@GetMapping("/{codigo}")
