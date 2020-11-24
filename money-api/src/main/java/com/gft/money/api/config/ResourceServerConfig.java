@@ -1,5 +1,6 @@
 package com.gft.money.api.config;
 
+/*
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -50,5 +51,5 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 	 }
 	
 }
-
+*/
 
