@@ -1,5 +1,7 @@
-package com.gft.money.api.config;
+//package com.gft.money.api.config;
 
+//ATRAPALHANDO A VER O HTML DO SWAGGER
+/*
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -37,5 +39,5 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 	}
 	
 }
-
+*/
 
