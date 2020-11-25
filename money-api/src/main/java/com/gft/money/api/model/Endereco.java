@@ -2,15 +2,32 @@ package com.gft.money.api.model;
 
 import javax.persistence.Embeddable;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
+
+@Api(tags = "Endereço")
 @Embeddable
 public class Endereco {
-
+	
+	@ApiModelProperty(example = "Rua Rebeca")
 	private String logradouro;
+	
+	@ApiModelProperty(example = "52")
 	private String numero;
+	
+	@ApiModelProperty(example = "apto 102")
 	private String complemento;
+	
+	@ApiModelProperty(example = "Bethânia")
 	private String bairro;
+	
+	@ApiModelProperty(example = "35164-119")
 	private String cep;
+	
+	@ApiModelProperty(example = "Ipatinga")
 	private String cidade;
+	
+	@ApiModelProperty(example = "MG")
 	private String estado;
 	
 	

@@ -9,20 +9,29 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+
+@ApiModel(value = "Pessoa", description = "Representa uma pessoa")
 @Entity
 @Table(name = "pessoa")
 public class Pessoa {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@ApiModelProperty(value = "ID da pessoa", example = "1")
 	private Long codigo;
 
+	@ApiModelProperty(example = "Tuvok")
 	@NotBlank
 	private String nome;
-
+	
+	
 	@Embedded
 	private Endereco endereco;
 
+	@ApiModelProperty(example = "True")
 	@NotNull
 	private Boolean ativo;
 
