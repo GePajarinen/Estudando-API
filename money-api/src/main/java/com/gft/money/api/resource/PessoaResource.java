@@ -22,7 +22,9 @@ import com.gft.money.api.model.Pessoa;
 import com.gft.money.api.repository.PessoaRepository;
 import com.gft.money.api.service.PessoaService;
 
+import io.swagger.annotations.Api;
 
+@Api(tags = "Pessoas")
 @RestController
 @RequestMapping("/pessoas")
 public class PessoaResource {
