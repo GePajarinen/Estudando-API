@@ -23,6 +23,7 @@ import com.gft.money.api.repository.PessoaRepository;
 import com.gft.money.api.service.PessoaService;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @Api(tags = "Pessoas")
 @RestController
@@ -38,6 +39,7 @@ public class PessoaResource {
 	@Autowired
 	private PessoaService ps;
 		
+	@ApiOperation("Cadastrar pessoa")
 	@PostMapping
 	public ResponseEntity<Pessoa> cadastrarPessoa(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response) {
 		Pessoa pessoaSalva = pr.save(pessoa);
@@ -47,18 +49,21 @@ public class PessoaResource {
 		
 	}
 	
+	@ApiOperation("Busca pessoa pelo código")
 	@GetMapping("/{codigo}")
 	public ResponseEntity<Pessoa> buscaPeloCodigo(@PathVariable Long codigo) {
 		Pessoa pessoa = pr.findById(codigo).orElse(null);
 		return pessoa != null ? ResponseEntity.ok(pessoa) : ResponseEntity.notFound().build();
 	}
 	
+	@ApiOperation("Remove pessoa da lista")
 	@DeleteMapping("/{codigo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void removerPessoa(@PathVariable Long codigo) {
 		pr.deleteById(codigo);
 	}
 	
+	@ApiOperation("Atualizar dados da pessoa")
 	@PutMapping("/{codigo}")
 	public ResponseEntity<Pessoa> atualizarPessoa(@PathVariable Long codigo, @Valid @RequestBody Pessoa pessoa){
 		Pessoa pessoaAtualizada = ps.atualizar(codigo, pessoa);
@@ -66,7 +71,7 @@ public class PessoaResource {
 		
 	}
 	
-	
+	@ApiOperation("Atualiza o status da pessoa")
 	@PutMapping("/{codigo}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void atualizarAtivo(@PathVariable Long codigo, @RequestBody Boolean ativo) {
