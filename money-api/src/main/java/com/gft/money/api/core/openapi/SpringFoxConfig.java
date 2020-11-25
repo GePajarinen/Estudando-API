@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -19,6 +20,8 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 		return new Docket(DocumentationType.SWAGGER_2)
 				.select()
 					.apis(RequestHandlerSelectors.basePackage("com.gft.money.api"))
+	//				.paths(PathSelectors.any())   //Igual ao de cima. Referência de outra opção.
+	//				.paths(PathSelectors.ant("/pessoas/*")) //Outra opção pra selecionar o que dispor na Documentação (bem legal)
 					.build();
 	}
 
