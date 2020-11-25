@@ -24,6 +24,7 @@ import com.gft.money.api.service.PessoaService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @Api(tags = "Pessoas")
 @RestController
@@ -41,7 +42,10 @@ public class PessoaResource {
 		
 	@ApiOperation("Cadastrar pessoa")
 	@PostMapping
-	public ResponseEntity<Pessoa> cadastrarPessoa(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response) {
+	public ResponseEntity<Pessoa> cadastrarPessoa(
+			@ApiParam(name = "Corpo", value = "Representação de uma nova pessoa no cadastro")
+			@Valid @RequestBody Pessoa pessoa, HttpServletResponse response) {
+		
 		Pessoa pessoaSalva = pr.save(pessoa);
 		
 		pub.publishEvent(new RecursoCriadoEvent(this, response, pessoaSalva.getCodigo()));
@@ -51,7 +55,10 @@ public class PessoaResource {
 	
 	@ApiOperation("Busca pessoa pelo código")
 	@GetMapping("/{codigo}")
-	public ResponseEntity<Pessoa> buscaPeloCodigo(@PathVariable Long codigo) {
+	public ResponseEntity<Pessoa> buscaPeloCodigo(
+			@ApiParam(value="ID da pessoa", example = "1") 
+			@PathVariable Long codigo) {
+		
 		Pessoa pessoa = pr.findById(codigo).orElse(null);
 		return pessoa != null ? ResponseEntity.ok(pessoa) : ResponseEntity.notFound().build();
 	}
@@ -59,13 +66,22 @@ public class PessoaResource {
 	@ApiOperation("Remove pessoa da lista")
 	@DeleteMapping("/{codigo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void removerPessoa(@PathVariable Long codigo) {
+	public void removerPessoa(
+			@ApiParam(value="ID da pessoa", example = "1")
+			@PathVariable Long codigo) {
+		
 		pr.deleteById(codigo);
 	}
 	
 	@ApiOperation("Atualizar dados da pessoa")
 	@PutMapping("/{codigo}")
-	public ResponseEntity<Pessoa> atualizarPessoa(@PathVariable Long codigo, @Valid @RequestBody Pessoa pessoa){
+	public ResponseEntity<Pessoa> atualizarPessoa(
+			@ApiParam(value="ID da pessoa", example = "1")
+			@PathVariable Long codigo, 
+			
+			@ApiParam(name = "Corpo", value = "Representação da pessoa com os dados atualizados")
+			@Valid @RequestBody Pessoa pessoa){
+		
 		Pessoa pessoaAtualizada = ps.atualizar(codigo, pessoa);
 		return ResponseEntity.ok(pessoaAtualizada);
 		
@@ -74,7 +90,13 @@ public class PessoaResource {
 	@ApiOperation("Atualiza o status da pessoa")
 	@PutMapping("/{codigo}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void atualizarAtivo(@PathVariable Long codigo, @RequestBody Boolean ativo) {
+	public void atualizarAtivo(
+			@ApiParam(value="ID da pessoa", example = "1")
+			@PathVariable Long codigo, 
+			
+			@ApiParam(value="Status da pessoa: Ativo (True or False)")
+			@RequestBody Boolean ativo) {
+		
 		ps.atualizarAtivo(codigo, ativo);
 	}
 	
