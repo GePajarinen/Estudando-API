@@ -8,17 +8,22 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
+@ApiModel(value = "Categoria", description = "Representa uma categoria")
 @Entity
 @Table(name= "categoria")
 public class Categoria {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@ApiModelProperty(value = "ID da categoria", example = "6")
 	private Long codigo;
 	
 	@NotBlank
 	@Size(min=3, max=20)
+	@ApiModelProperty(example = "Transporte")
 	private String nome;
 
 	public Long getCodigo() {

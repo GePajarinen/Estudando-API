@@ -32,7 +32,12 @@ import com.gft.money.api.repository.filter.LancamentoFilter;
 import com.gft.money.api.service.LancamentoService;
 import com.gft.money.api.service.exception.PessoaInexistenteOuInativaException;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
+@Api(tags = "Lançamentos")
 @RestController
 @RequestMapping("/lancamentos")
 public class LancamentoResource {
@@ -49,21 +54,48 @@ public class LancamentoResource {
 	@Autowired
 	private MessageSource ms;
 	
-	
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Pesquisa de lançamentos")
 	@GetMapping
-	public Page<Lancamento> pesquisar(LancamentoFilter lancamentoFilter, Pageable pageable) {
+	public Page<Lancamento> pesquisar(
+			LancamentoFilter lancamentoFilter, 
+			Pageable pageable) {
 		return lr.filtrar(lancamentoFilter, pageable);
 	}
 	
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Buscar lançamento pelo ID")
 	@GetMapping("/{codigo}")
-	public ResponseEntity<Lancamento> buscarPeloCodigo(@PathVariable Long codigo) {
+	public ResponseEntity<Lancamento> buscarPeloCodigo(
+			@ApiParam(value="ID do lançamento", example = "5")
+			@PathVariable Long codigo) {
 		Lancamento lancamento = lr.findById(codigo).orElse(null);
 
 		return lancamento != null ? ResponseEntity.ok(lancamento) : ResponseEntity.notFound().build();
 	}
 	
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Adicionar novo lançamento")
 	@PostMapping
-	public ResponseEntity<Lancamento> cadastrarLancamento(@Valid @RequestBody Lancamento lancamento, HttpServletResponse response) {
+	public ResponseEntity<Lancamento> cadastrarLancamento(
+			@ApiParam(name = "Corpo", value = "Representação de um novo lançamento")
+			@Valid @RequestBody Lancamento lancamento, HttpServletResponse response) {
+		
 		Lancamento lancamentoSalva = ls.savarLancamento(lancamento);
 		
 		pub.publishEvent(new RecursoCriadoEvent(this, response, lancamentoSalva.getCodigo()));
@@ -81,9 +113,19 @@ public class LancamentoResource {
 		return ResponseEntity.badRequest().body(erros);
 	}
 	
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Deletar lançamento pelo ID")
 	@DeleteMapping("/{codigo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void removerLancamento(@PathVariable Long codigo) {
+	public void removerLancamento(
+			@ApiParam(value="ID do lançamento", example = "5")
+			@PathVariable Long codigo) {
+		
 		lr.deleteById(codigo);
 	}
 	

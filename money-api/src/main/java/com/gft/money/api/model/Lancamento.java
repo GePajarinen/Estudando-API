@@ -16,41 +16,53 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel(value = "Lançamento", description = "Representa um lançamento")
 @Entity
 @Table(name = "lancamento")
 public class Lancamento {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@ApiModelProperty(value = "ID do lançamento", example = "16")
 	private Long codigo;
 	
 	@NotBlank
+	@ApiModelProperty(example = "Carro")
 	private String descricao;
 
 	@NotNull
 	@Column(name = "data_vencimento")
+	@ApiModelProperty(value = "Data do vencimento", example = "2020-04-22")
 	private LocalDate dataVencimento;
 
 	@Column(name = "data_pagamento")
+	@ApiModelProperty(example = "2020-05-20")
 	private LocalDate dataPagamento;
 
 	@NotNull
+	@ApiModelProperty(example = "550")
 	private BigDecimal valor;
 
 	private String observacao;
 
 	@NotNull
 	@Enumerated(EnumType.STRING)
+	@ApiModelProperty(example = "DESPESA")
 	private TipoLancamento tipo;
 
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "codigo_categoria")
+	@ApiModelProperty(example = "5")
 	private Categoria categoria;
 
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "codigo_pessoa")
+	@ApiModelProperty(example = "1")
 	private Pessoa pessoa;
 
 	public Long getCodigo() {

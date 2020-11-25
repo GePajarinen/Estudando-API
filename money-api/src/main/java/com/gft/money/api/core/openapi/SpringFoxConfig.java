@@ -27,7 +27,7 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 	//				.paths(PathSelectors.ant("/pessoas/*")) //Outra opção pra selecionar o que dispor na Documentação (bem legal)
 					.build()
 				.apiInfo(apiInfo())
-				.tags(new Tag("Pessoas", "Gerenciando pessoas"));
+				.tags(new Tag("Pessoas", "Gerenciando pessoas"), new Tag("Categorias", "Gerenciando categorias"), new Tag("Lançamentos", "Gerenciando lançamentos"));
 	}
 
 	
