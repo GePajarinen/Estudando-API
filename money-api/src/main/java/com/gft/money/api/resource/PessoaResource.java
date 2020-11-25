@@ -23,6 +23,7 @@ import com.gft.money.api.repository.PessoaRepository;
 import com.gft.money.api.service.PessoaService;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -39,7 +40,13 @@ public class PessoaResource {
 	
 	@Autowired
 	private PessoaService ps;
-		
+	
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
 	@ApiOperation("Cadastrar pessoa")
 	@PostMapping
 	public ResponseEntity<Pessoa> cadastrarPessoa(
@@ -53,30 +60,48 @@ public class PessoaResource {
 		
 	}
 	
+	@ApiImplicitParam(name = "Authorization", 
+					value = "Bearer Token", 
+					required = true, 
+					allowEmptyValue = false, 
+					paramType = "header", 
+					example = "Bearer access_token")
 	@ApiOperation("Busca pessoa pelo código")
 	@GetMapping("/{codigo}")
 	public ResponseEntity<Pessoa> buscaPeloCodigo(
-			@ApiParam(value="ID da pessoa", example = "1") 
+			@ApiParam(value="ID da pessoa", example = "11") 
 			@PathVariable Long codigo) {
 		
 		Pessoa pessoa = pr.findById(codigo).orElse(null);
 		return pessoa != null ? ResponseEntity.ok(pessoa) : ResponseEntity.notFound().build();
 	}
 	
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
 	@ApiOperation("Remove pessoa da lista")
 	@DeleteMapping("/{codigo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void removerPessoa(
-			@ApiParam(value="ID da pessoa", example = "1")
+			@ApiParam(value="ID da pessoa", example = "11")
 			@PathVariable Long codigo) {
 		
 		pr.deleteById(codigo);
 	}
 	
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
 	@ApiOperation("Atualizar dados da pessoa")
 	@PutMapping("/{codigo}")
 	public ResponseEntity<Pessoa> atualizarPessoa(
-			@ApiParam(value="ID da pessoa", example = "1")
+			@ApiParam(value="ID da pessoa", example = "11")
 			@PathVariable Long codigo, 
 			
 			@ApiParam(name = "Corpo", value = "Representação da pessoa com os dados atualizados")
@@ -87,11 +112,17 @@ public class PessoaResource {
 		
 	}
 	
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
 	@ApiOperation("Atualiza o status da pessoa")
 	@PutMapping("/{codigo}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void atualizarAtivo(
-			@ApiParam(value="ID da pessoa", example = "1")
+			@ApiParam(value="ID da pessoa", example = "11")
 			@PathVariable Long codigo, 
 			
 			@ApiParam(value="Status da pessoa: Ativo (True or False)")

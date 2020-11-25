@@ -1,7 +1,5 @@
-//package com.gft.money.api.config;
+package com.gft.money.api.config;
 
-//ATRAPALHANDO A VER O HTML DO SWAGGER
-/*
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,4 +43,3 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	}
 }
 
-*/

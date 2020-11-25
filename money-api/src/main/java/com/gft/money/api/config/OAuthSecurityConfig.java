@@ -1,7 +1,5 @@
-//package com.gft.money.api.config;
+package com.gft.money.api.config;
 
-//ATRAPALHANDO A VER O HTML DO SWAGGER
-/*
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,4 +23,3 @@ public class OAuthSecurityConfig extends WebSecurityConfigurerAdapter {
 		return NoOpPasswordEncoder.getInstance();
 	}
 }
-*/
