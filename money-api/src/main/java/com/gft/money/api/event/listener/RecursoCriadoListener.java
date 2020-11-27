@@ -21,6 +21,7 @@ public class RecursoCriadoListener implements ApplicationListener<RecursoCriadoE
 		adicionarHeaderLocation(response, codigo);
 	}
 
+	//Método que adicona no HEADER a localização do evento criado
 	private void adicionarHeaderLocation(HttpServletResponse response, Long codigo) {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{codigo}").buildAndExpand(codigo).toUri();
 		response.setHeader("Location", uri.toASCIIString());
