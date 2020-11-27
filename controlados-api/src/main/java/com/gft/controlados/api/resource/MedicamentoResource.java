@@ -45,7 +45,7 @@ public class MedicamentoResource {
 		
 		
 		@PostMapping
-		public ResponseEntity<Medicamento> cadastrarMedicamento(@RequestBody Medicamento medicamento, HttpServletResponse response) {
+		public ResponseEntity<Medicamento> cadastrarMedicamento(@Valid @RequestBody Medicamento medicamento, HttpServletResponse response) {
 			Medicamento medicamentoSalvo = mr.save(medicamento);
 			
 			pub.publishEvent(new RecursoCriadoEvent(this, response, medicamentoSalvo.getCodigo()));

@@ -45,7 +45,7 @@ public class ClienteResource {
 	
 	
 	@PostMapping
-	public ResponseEntity<Cliente> cadastrarCliente(@RequestBody Cliente cliente, HttpServletResponse response) {
+	public ResponseEntity<Cliente> cadastrarCliente(@Valid @RequestBody Cliente cliente, HttpServletResponse response) {
 		Cliente clienteSalvo = cr.save(cliente);
 		
 		pub.publishEvent(new RecursoCriadoEvent(this, response, clienteSalvo.getCodigo()));
