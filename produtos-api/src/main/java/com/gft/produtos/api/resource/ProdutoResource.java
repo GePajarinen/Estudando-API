@@ -1,6 +1,7 @@
 package com.gft.produtos.api.resource;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +27,7 @@ import com.gft.produtos.api.repository.ProdutoRepository;
 import com.gft.produtos.api.service.ProdutoService;
 
 @RestController
-@RequestMapping("/produtos")
+@RequestMapping("/api/produtos")
 public class ProdutoResource {
 	
 	@Autowired
@@ -59,17 +61,6 @@ public class ProdutoResource {
 		}
 		
 		
-	//EXCLUIT PRODUTO
-	@DeleteMapping("/{codigo}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void removerProduto(
-			@PathVariable Long codigo) {
-		
-		pr.deleteById(codigo);
-	}
-	
-	
-	
 	//BUSCAR PRODUTO PELO ID
 	@GetMapping("/{codigo}")
 	public ResponseEntity<Produto> buscaPeloCodigo(
@@ -79,21 +70,47 @@ public class ProdutoResource {
 		return produto != null ? ResponseEntity.ok(produto) : ResponseEntity.notFound().build();
 	}
 	
-	//BUSCAR PRODUTO POR NOME
-	
-	
 	
 	
 	//ATUALIZAR PRODUTO
-	@PutMapping("/{codigo}")
-	public ResponseEntity<Produto> atualizarProduto(
-			@PathVariable Long codigo, 
-			@Valid @RequestBody Produto produto){
+		@PutMapping("/{codigo}")
+		public ResponseEntity<Produto> atualizarProduto(
+				@PathVariable Long codigo, 
+				@Valid @RequestBody Produto produto){
+			
+			Produto produtoAtualizado = ps.atualizar(codigo, produto);
+			return ResponseEntity.ok(produtoAtualizado);
+			
+		}
+	
+
+	//EXCLUIR PRODUTO
+		@DeleteMapping("/{codigo}")
+		@ResponseStatus(HttpStatus.NO_CONTENT)
+		public void removerProduto(
+				@PathVariable Long codigo) {
+			
+			pr.deleteById(codigo);
+		}
+	
 		
-		Produto produtoAtualizado = ps.atualizar(codigo, produto);
-		return ResponseEntity.ok(produtoAtualizado);
 		
-	}
+	//LISTAR PRODUTOS ORDEM ALFA CRESC
+	//LISTAR PRODUTOS ORDEM ALFA DRECR
+	
+		
+		
+	//BUSCAR PRODUTO POR NOME
+	@GetMapping("/nome/{nome}")
+	public @ResponseBody List<Produto> procuraPorNome(@PathVariable Optional<String> nome){
+		if(nome.isPresent()) {
+			return pr.findByNomeContaining(nome.get());
+		}else{
+			return pr.findAll();
+		}
+}
+	
+	
 	
 	//ATUALIZAR PRODUTO EM PROMOÇÃO
 	@PutMapping("/{codigo}/promocao")
@@ -107,8 +124,7 @@ public class ProdutoResource {
 	
 	
 	
-	//LISTAR PRODUTOS ORDEM ALFA CRESC
-	//LISTAR PRODUTOS ORDEM ALFA DRECR
+	
 		
 	
 	}
