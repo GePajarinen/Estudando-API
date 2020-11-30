@@ -3,6 +3,7 @@ package com.gft.produtos.api.resource;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.criteria.Order;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -96,6 +97,11 @@ public class ProdutoResource {
 		
 		
 	//LISTAR PRODUTOS ORDEM ALFA CRESC
+	@GetMapping("/asc")
+	public List<Produto> ordernarAsc(){
+		return pr.ordemCrescente();
+		
+	}
 	//LISTAR PRODUTOS ORDEM ALFA DRECR
 	
 		
