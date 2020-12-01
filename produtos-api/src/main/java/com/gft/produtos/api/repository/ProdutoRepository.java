@@ -5,12 +5,13 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.gft.produtos.api.model.Produto;
-import com.gft.produtos.api.repository.produto.ProdutoRepositoryQuery;
 
-public interface ProdutoRepository  extends JpaRepository<Produto, Long>, ProdutoRepositoryQuery{
+public interface ProdutoRepository  extends JpaRepository<Produto, Long>{
 
 	
 	List<Produto> findByNomeContaining(String nome);
+
+	public List<Produto> findAllByOrderByNomeAsc();
 	
 	//public Page<Produto> findByNomeContaining(String nome);
 
