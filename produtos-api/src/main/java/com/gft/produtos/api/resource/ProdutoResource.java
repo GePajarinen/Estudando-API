@@ -53,6 +53,7 @@ public class ProdutoResource {
 	public ResponseEntity<Produto> cadastrarProduto(
 			@Valid @RequestBody Produto produto, HttpServletResponse response) {
 		
+					
 		Produto produtoSalvo = pr.save(produto);
 			
 		pub.publishEvent(new RecursoCriadoEvent(this, response, produtoSalvo.getCodigo()));

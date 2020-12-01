@@ -21,8 +21,7 @@ public class ClienteService {
 		return cr.save(clienteAtualizado);
 	}
 
-	
-		
+			
 	public Cliente buscarClientePeloCodigo(Long codigo) {
 		Cliente clienteAtualizado = cr.findById(codigo).orElse(null);
 		if (clienteAtualizado == null) {

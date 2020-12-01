@@ -8,8 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -25,14 +26,15 @@ public class Venda {
 	@NotNull
 	private BigDecimal valor;
 	
+	@NotNull
 	private LocalDate datacompra;
 
 	@NotNull
-	@OneToOne
+	@ManyToOne
+	@JoinColumn(name = "cliente")
 	private Cliente cliente;
 	
 	
-	@NotNull
 	@OneToMany
 	private List<Fornecedor> fornecedores;
 	
