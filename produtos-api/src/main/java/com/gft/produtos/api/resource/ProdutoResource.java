@@ -8,7 +8,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -105,7 +104,11 @@ public class ProdutoResource {
 	
 	
 	//LISTAR PRODUTOS ORDEM ALFA DRECR
-	
+	@GetMapping("/desc")
+	public List<Produto> ordernarDesc(){
+		List<Produto> desc = pr.findAllByOrderByNomeDesc();
+		return desc;
+	}
 		
 		
 	//BUSCAR PRODUTO POR NOME
