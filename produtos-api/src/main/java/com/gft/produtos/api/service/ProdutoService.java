@@ -20,7 +20,7 @@ public class ProdutoService {
 		return pr.save(produtoAtualizado);
 	}
 
-	//Quando tenta atualizar a PROMOCAO de alguém que não existe, ele manda o código como NULL
+	
 	public void atualizarPromocao(Long codigo, Boolean promocao) {
 		Produto produtoAtualizado = pr.findById(codigo).orElse(null);
 		if (produtoAtualizado == null) {

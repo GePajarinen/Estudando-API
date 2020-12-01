@@ -117,7 +117,7 @@ public class ProdutoResource {
 		if(nome.isPresent()) {
 			return pr.findByNomeContaining(nome.get());
 		}else{
-			return pr.findAll();
+			return pr.findAll(); //Não funciona
 		}
 }
 	
@@ -134,10 +134,6 @@ public class ProdutoResource {
 	}
 	
 	
-	
-	
-		
-	
-	}
+}
 
 

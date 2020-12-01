@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "cliente")
@@ -18,20 +20,25 @@ public class Cliente {
 	private Long codigo;
 	
 	@NotBlank
+	@Size(min=3, max=100)
 	private String nome;
 	
 	@NotBlank
 	private String email;
 	
 	@NotBlank
+	@Size(min=3, max=20)
 	private String senha;
 	
 	@NotBlank
+	@Size(min=8, max=14)  
 	private String documento;
-		
+	
+	@NotNull
 	private LocalDate datacadastro;
 
-	@NotBlank
+	
+	
 	public Long getCodigo() {
 		return codigo;
 	}

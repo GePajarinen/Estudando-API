@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "fornecedor")
@@ -16,9 +17,11 @@ public class Fornecedor {
 	private Long codigo;
 	
 	@NotBlank
+	@Size(min=3, max=30)
 	private String nome;
 	
 	@NotBlank
+	@Size(min=14, max=18)
 	private String cnpj;
 	
 	
