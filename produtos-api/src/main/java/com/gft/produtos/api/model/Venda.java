@@ -25,7 +25,7 @@ public class Venda {
 	@NotNull
 	private BigDecimal valor;
 	
-	private LocalDate dataCompra;
+	private LocalDate datacompra;
 
 	@NotNull
 	@OneToOne
@@ -58,12 +58,12 @@ public class Venda {
 		this.valor = valor;
 	}
 
-	public LocalDate getDataCompra() {
-		return dataCompra;
+	public LocalDate getdatacompra() {
+		return datacompra;
 	}
 
-	public void setDataCompra(LocalDate dataCompra) {
-		this.dataCompra = dataCompra;
+	public void setdatacompra(LocalDate datacompra) {
+		this.datacompra = datacompra;
 	}
 
 	public Cliente getCliente() {

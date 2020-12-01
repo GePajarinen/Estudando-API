@@ -1,7 +1,7 @@
 CREATE TABLE venda (
 	codigo BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
 	valor DECIMAL(10,2) NOT NULL,
-	dataCompra DATE NOT NULL,
+	datacompra DATE NOT NULL,
 	
 	cliente BIGINT(20) NOT NULL,
 	FOREIGN KEY (cliente) REFERENCES cliente(codigo),

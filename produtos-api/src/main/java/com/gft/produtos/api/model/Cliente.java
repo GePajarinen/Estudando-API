@@ -29,7 +29,7 @@ public class Cliente {
 	@NotBlank
 	private String documento;
 		
-	private LocalDate dataCadastro;
+	private LocalDate datacadastro;
 
 	@NotBlank
 	public Long getCodigo() {
@@ -72,12 +72,12 @@ public class Cliente {
 		this.documento = documento;
 	}
 
-	public LocalDate getDataCadastro() {
-		return dataCadastro;
+	public LocalDate getdatacadastro() {
+		return datacadastro;
 	}
 
-	public void setDataCadastro(LocalDate dataCadastro) {
-		this.dataCadastro = dataCadastro;
+	public void setdatacadastro(LocalDate datacadastro) {
+		this.datacadastro = datacadastro;
 	}
 	
 	
