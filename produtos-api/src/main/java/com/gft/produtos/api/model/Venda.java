@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -23,10 +25,8 @@ public class Venda {
 	private Long codigo;
 	
 	
-	@NotNull
 	private BigDecimal valor;
 	
-	@NotNull
 	private LocalDate datacompra;
 
 	@NotNull
@@ -35,15 +35,37 @@ public class Venda {
 	private Cliente cliente;
 	
 	
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "venda_fornecedor",
+            joinColumns = @JoinColumn(name = "venda_codigo"),
+            inverseJoinColumns = @JoinColumn(name = "fornecedor_codigo"))
 	private List<Fornecedor> fornecedores;
 	
 	
 	@NotNull
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "venda_produtos",
+            joinColumns = @JoinColumn(name = "venda_codigo"),
+            inverseJoinColumns = @JoinColumn(name = "produtos_codigo"))
 	private List<Produto> produtos;
 	
 		
+	public Venda() {}
+	
+	public Venda(Long codigo, BigDecimal valor, LocalDate datacompra, @NotNull Cliente cliente, List<Fornecedor> fornecedores,
+			@NotNull List<Produto> produtos) {
+		//super();
+		this.valor = valor;
+		this.datacompra = datacompra;
+		this.cliente = cliente;
+		this.fornecedores = fornecedores;
+		this.produtos = produtos;
+	}
+
+	
+	
 	public Long getCodigo() {
 		return codigo;
 	}

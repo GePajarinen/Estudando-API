@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gft.produtos.api.event.RecursoCriadoEvent;
+import com.gft.produtos.api.model.CadastroVenda;
+import com.gft.produtos.api.model.Produto;
 import com.gft.produtos.api.model.Venda;
 import com.gft.produtos.api.repository.VendaRepository;
 import com.gft.produtos.api.service.VendaService;
@@ -52,12 +54,19 @@ public class VendaResource {
 		//INSERIR VENDAS
 		@PostMapping
 		public ResponseEntity<Venda> cadastrarVenda(
-				@Valid @RequestBody Venda venda, HttpServletResponse response) {
-						
-			Venda vendaSalva = vr.save(venda);
-				
+				@Valid @RequestBody CadastroVenda cadastroVenda, HttpServletResponse response) {
+			
+			System.out.println("passo 1");
+			List<Produto> p = vs.criarListaProdutos(cadastroVenda);
+			
+			Venda vendaSalva = vs.criarVenda(cadastroVenda, p);
+			System.out.println("passo 2");
+			
+			vr.save(vendaSalva);
+			
 			pub.publishEvent(new RecursoCriadoEvent(this, response, vendaSalva.getCodigo()));
 			return ResponseEntity.status(HttpStatus.CREATED).body(vendaSalva);
+					
 				
 		}
 			

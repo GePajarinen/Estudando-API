@@ -15,5 +15,7 @@ public interface ClienteRepository  extends JpaRepository<Cliente, Long>{
 	
 	public List<Cliente> findAllByOrderByNomeDesc();
 	
+	public Cliente findByCodigo(Long codigo);
+	
 	
 }
