@@ -31,6 +31,8 @@ CREATE TABLE venda_produtos (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+
+
 INSERT INTO fornecedor_produtos (fornecedor_codigo, produtos_codigo) values (1, 1);
 INSERT INTO fornecedor_produtos (fornecedor_codigo, produtos_codigo) values (1, 4);
 INSERT INTO fornecedor_produtos (fornecedor_codigo, produtos_codigo) values (1, 5);

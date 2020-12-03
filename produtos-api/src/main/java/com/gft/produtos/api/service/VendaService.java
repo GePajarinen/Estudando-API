@@ -37,7 +37,10 @@ public class VendaService {
 	
 	@Autowired
 	private ClienteRepository cr;
-
+	
+	
+	
+	
 	public Venda atualizar(Long codigo, Venda venda) {
 		Venda vendaAtualizada = buscarVendaPeloCodigo(codigo);
 		BeanUtils.copyProperties(venda, vendaAtualizada, "codigo");
@@ -61,7 +64,6 @@ public class VendaService {
 		
 		//Se Cliente NULL
 		if (cadastroVenda.getCliente().getCodigo() == null) {
-			System.out.println("BLABLA");
 			throw new EmptyResultDataAccessException(1);
 		}
 		
@@ -103,8 +105,6 @@ public class VendaService {
 		LocalDate data = LocalDate.now();
 		Venda venda = new Venda(cadastroVenda.getCodigo(), total, data, cliente, listaFornecedores, listaDeProdutos);
 		
-		System.out.println("venda codigo "+ venda.getCodigo());
-		
 		return venda;
 	}
 
@@ -115,7 +115,6 @@ public class VendaService {
 		List<Produto> lp = new ArrayList<Produto>();
 		List<ProdutoListagem> listagem = cadastroVenda.getProdutos();
 		
-		System.out.println("listagem size "+ listagem.size());
 		
 		//Se Lista de Produtos Estiver vazia
 		if (listagem.size() == 0) {
@@ -126,13 +125,10 @@ public class VendaService {
 			
 			//Se código produto for NULL ou Sem produto
 			if (n.getCodigo() == null) {
-				System.out.println("PEGUEI!! ");
 				throw new EmptyResultDataAccessException(1);
 			}
 			
 			Produto p = pr.findByCodigo(n.getCodigo());
-			
-			System.out.println("PRODUTO " + p);
 			
 			//Se Produto não consta no cadastro
 			if(p == null) {
@@ -142,10 +138,11 @@ public class VendaService {
 			lp.add(p);
 		}
 		
-		
-		System.out.println("lp size "+ lp.size());
 		return lp;
 	}
+	
+	
+	
 	
 	
 }

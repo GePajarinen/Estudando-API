@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -113,18 +114,19 @@ public class VendaResource {
 		
 			
 			
-		//LISTAR VENDAS ORDEM ALFA CRESC
+		//LISTAR VENDAS PELO NOME DO CLIENTE ORDEM CRESC
 		@GetMapping("/asc")
 		public List<Venda> ordernarAsc(){
-			List<Venda> asc = vr.findAllByOrderByCodigoAsc();
+			
+			List<Venda> asc = vr.findAll(Sort.by("cliente.nome"));
 			return asc;
 		}
 		
 		
-		//LISTAR VENDAS ORDEM ALFA DRECR
+		//LISTAR VENDAS PELO NOME DO CLIENTE ORDEM DESC
 		@GetMapping("/desc")
 		public List<Venda> ordernarDesc(){
-			List<Venda> desc = vr.findAllByOrderByCodigoDesc();
+			List<Venda> desc = vr.findAll(Sort.by("cliente.nome").descending());
 			return desc;
 		}
 			

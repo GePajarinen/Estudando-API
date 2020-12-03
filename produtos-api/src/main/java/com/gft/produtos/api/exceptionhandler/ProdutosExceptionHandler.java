@@ -23,10 +23,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.gft.produtos.api.exceptionhandler.ProdutosExceptionHandler.Erro;
 import com.gft.produtos.api.service.exception.ListaDeProdutosVaziaException;
 import com.gft.produtos.api.service.exception.ProdutoNaoExistenteException;
-import com.gft.produtos.api.service.exception.VendaClienteNaoExistenteException;
 
 @ControllerAdvice
 public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
