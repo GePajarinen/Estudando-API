@@ -21,6 +21,7 @@ import com.gft.produtos.api.model.Venda;
 import com.gft.produtos.api.repository.ClienteRepository;
 import com.gft.produtos.api.repository.ProdutoRepository;
 import com.gft.produtos.api.repository.VendaRepository;
+import com.gft.produtos.api.service.exception.ProdutoNaoExistenteException;
 import com.gft.produtos.api.service.exception.VendaClienteNaoExistenteException;
 
 
@@ -54,6 +55,7 @@ public class VendaService {
 	}
 
 
+	
 	public Venda criarVenda(CadastroVenda cadastroVenda, List<Produto> listaProdutos) {
 		
 		//Se Cliente NULL
@@ -68,9 +70,8 @@ public class VendaService {
 		if(cliente == null) {
 			throw new VendaClienteNaoExistenteException();
 		}
-			
 		
-
+		
 		System.out.println("cliente "+ cadastroVenda.getCliente().getCodigo() );
 		
 		List<Produto> listaDeProdutos = listaProdutos; 
@@ -79,15 +80,13 @@ public class VendaService {
 		System.out.println("cliente  "+ cliente.getNome() );
 		
 		BigDecimal  total = new BigDecimal("0.00");
+		System.out.println("AQUI  ");
 		
 		for (Produto produto : listaDeProdutos) {
-			System.out.println("p  "+ produto.getCodigo());
 			
-			
-			System.out.println("p  "+ produto.getPromocao() );
-			System.out.println("p  "+ produto.getValor() );
-			System.out.println("p  "+ produto.getvalorpromo() );
-			
+			System.out.println("p CODIGO "+ produto.getCodigo());
+		
+		
 			if(produto.getPromocao()) {
 				total= total.add(produto.getvalorpromo());
 				System.out.println("total " + total);
@@ -97,36 +96,13 @@ public class VendaService {
 			}
 			
 			listaFornecedores.add(produto.getFornecedor());
-			System.out.println("for name "+ produto.getFornecedor().getNome());
 		}
 		
-		System.out.println("decimalTOTAL "+ total );
-		System.out.println("decimalTOTAL class  "+ total.getClass() );
 		
 		LocalDate data = LocalDate.now();
-		
 		Venda venda = new Venda(cadastroVenda.getCodigo(), total, data, cliente, listaFornecedores, listaDeProdutos);
 		
-		//Eu coloquei um Construtor na classe VENDA pra melhorar isso, mas deu erro não hora de GET vendas
-		// ERRO org.hibernate.InstantiationException: No default constructor for entity:
-		
-		
-		/*
-		Venda venda = new Venda();
-		venda.setCodigo(cadastroVenda.getCodigo());
-		venda.setCliente(cliente);
-		venda.setValor(total);
-		venda.setdatacompra(data);
-		venda.setFornecedores(listaFornecedores);
-		venda.setProdutos(listaDeProdutos);*/
-		
-		//vr.save(venda);
-		//Com esse, salvar venda nao funciona
-		
-		
 		System.out.println("venda codigo "+ venda.getCodigo());
-		
-		System.out.println("antes ");
 		
 		return venda;
 	}
@@ -136,11 +112,25 @@ public class VendaService {
 	public List<Produto> criarListaProdutos(@Valid CadastroVenda cadastroVenda) {
 		
 		List<Produto> lp = new ArrayList<Produto>();
-		
 		List<ProdutoListagem> listagem = cadastroVenda.getProdutos();
 		
 		for(ProdutoListagem n : listagem) {
+			
+			//Se código produto for NULL ou Sem produto
+			if (n.getCodigo() == null) {
+				System.out.println("PEGUEI!! ");
+				throw new EmptyResultDataAccessException(1);
+			}
+			
 			Produto p = pr.findByCodigo(n.getCodigo());
+			
+			System.out.println("PRODUTO " + p);
+			
+			//Se Produto não consta no cadastro
+			if(p == null) {
+				throw new ProdutoNaoExistenteException();
+			}
+			
 			lp.add(p);
 		}
 		

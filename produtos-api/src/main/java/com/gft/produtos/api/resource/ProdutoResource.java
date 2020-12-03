@@ -1,5 +1,6 @@
 package com.gft.produtos.api.resource;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,9 +9,14 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,11 +26,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import com.gft.produtos.api.event.RecursoCriadoEvent;
+import com.gft.produtos.api.exceptionhandler.ProdutosExceptionHandler.Erro;
 import com.gft.produtos.api.model.Produto;
 import com.gft.produtos.api.repository.ProdutoRepository;
 import com.gft.produtos.api.service.ProdutoService;
+import com.gft.produtos.api.service.exception.ProdutoNaoExistenteException;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -39,6 +48,9 @@ public class ProdutoResource {
 	@Autowired
 	private ProdutoService ps;
 
+	@Autowired
+	private MessageSource ms;
+	
 	
 	
 	//LISTAR PRODUTOS
@@ -52,7 +64,6 @@ public class ProdutoResource {
 	@PostMapping
 	public ResponseEntity<Produto> cadastrarProduto(
 			@Valid @RequestBody Produto produto, HttpServletResponse response) {
-		
 					
 		Produto produtoSalvo = pr.save(produto);
 			
@@ -133,6 +144,8 @@ public class ProdutoResource {
 		
 		ps.atualizarPromocao(codigo, promocao);
 	}
+	
+	
 	
 	
 }

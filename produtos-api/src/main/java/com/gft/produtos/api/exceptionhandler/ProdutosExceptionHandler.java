@@ -23,6 +23,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.gft.produtos.api.service.exception.ProdutoNaoExistenteException;
+
 @ControllerAdvice
 public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 	
@@ -88,6 +90,21 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 	
 	}
 	
+	//Exception especial pra PRODUTO. CASO Cadastrar VENDA sem Produto no cadastro
+		@ExceptionHandler({ProdutoNaoExistenteException.class})
+
+		public ResponseEntity<Object> handleProdutoNaoExistenteException(ProdutoNaoExistenteException ex, WebRequest request) {
+			String mensagemUsuario = ms.getMessage("produto.inexistente", null, LocaleContextHolder.getLocale());
+			String mensagemDesenvolvedor = ex.toString(); 
+			
+			List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
+			return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+			
+		}
+	
+
+		
+		
 	//Criando a lista de erros e "bindind" os tipos de erros dentro da lista.
 		private List<Erro> criarListaDeErros(BindingResult bindingResult){
 			List<Erro> erros = new ArrayList<>();
