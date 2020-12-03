@@ -23,7 +23,10 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.gft.produtos.api.exceptionhandler.ProdutosExceptionHandler.Erro;
+import com.gft.produtos.api.service.exception.ListaDeProdutosVaziaException;
 import com.gft.produtos.api.service.exception.ProdutoNaoExistenteException;
+import com.gft.produtos.api.service.exception.VendaClienteNaoExistenteException;
 
 @ControllerAdvice
 public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
@@ -102,7 +105,23 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 			
 		}
 	
-
+		
+	
+			
+	//Exception especial pra essa classe. CASO Cliente não exista no cadastro
+	@ExceptionHandler({ListaDeProdutosVaziaException.class})
+	public ResponseEntity<Object> handleListaDeProdutosVaziaException(ListaDeProdutosVaziaException ex) {
+		String mensagemUsuario = ms.getMessage("listaprodutos.vazia", null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
+		
+		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		return ResponseEntity.badRequest().body(erros);
+	}
+		
+		
+		
+		
+		
 		
 		
 	//Criando a lista de erros e "bindind" os tipos de erros dentro da lista.
@@ -117,6 +136,8 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 			
 			return erros;
 		}
+		
+
 		
 		//Classe de Erros para usuário e desenvolvedor
 		public static class Erro {

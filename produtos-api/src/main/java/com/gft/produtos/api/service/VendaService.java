@@ -21,6 +21,7 @@ import com.gft.produtos.api.model.Venda;
 import com.gft.produtos.api.repository.ClienteRepository;
 import com.gft.produtos.api.repository.ProdutoRepository;
 import com.gft.produtos.api.repository.VendaRepository;
+import com.gft.produtos.api.service.exception.ListaDeProdutosVaziaException;
 import com.gft.produtos.api.service.exception.ProdutoNaoExistenteException;
 import com.gft.produtos.api.service.exception.VendaClienteNaoExistenteException;
 
@@ -113,6 +114,13 @@ public class VendaService {
 		
 		List<Produto> lp = new ArrayList<Produto>();
 		List<ProdutoListagem> listagem = cadastroVenda.getProdutos();
+		
+		System.out.println("listagem size "+ listagem.size());
+		
+		//Se Lista de Produtos Estiver vazia
+		if (listagem.size() == 0) {
+			throw new ListaDeProdutosVaziaException();
+		}
 		
 		for(ProdutoListagem n : listagem) {
 			
