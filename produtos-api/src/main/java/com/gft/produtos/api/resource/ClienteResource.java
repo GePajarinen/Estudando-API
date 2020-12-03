@@ -1,5 +1,6 @@
 package com.gft.produtos.api.resource;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,8 +55,11 @@ public class ClienteResource {
 	public ResponseEntity<Cliente> cadastrarCliente(
 			@Valid @RequestBody Cliente cliente, HttpServletResponse response) {
 		
+		LocalDate data = LocalDate.now();
+		cliente.setdatacadastro(data);
+		
 		Cliente clienteSalvo = cr.save(cliente);
-			
+		
 		pub.publishEvent(new RecursoCriadoEvent(this, response, clienteSalvo.getCodigo()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(clienteSalvo);
 			
@@ -78,7 +82,11 @@ public class ClienteResource {
 				@PathVariable Long codigo, 
 				@Valid @RequestBody Cliente cliente){
 			
+			System.out.println("r-");
+			
 			Cliente clienteAtualizado = cs.atualizar(codigo, cliente);
+			
+			
 			return ResponseEntity.ok(clienteAtualizado);
 			
 		}

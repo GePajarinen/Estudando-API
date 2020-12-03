@@ -20,6 +20,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
@@ -63,7 +64,7 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 			
 		}
 	
-
+	
 	@ExceptionHandler({DataIntegrityViolationException.class})
 	public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
 		String mensagemUsuario = ms.getMessage("recurso.operacao-nao-permitida", null, LocaleContextHolder.getLocale());
@@ -73,6 +74,19 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 			
 		}
+	
+	//Se não colocar nada na busca pelo nome
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	protected ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex,
+	                                 WebRequest request) {
+	  
+		String mensagemUsuario = ms.getMessage("recurso.nao-encontrado", null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ExceptionUtils.getRootCauseMessage(ex);
+			
+		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+	
+	}
 	
 	//Criando a lista de erros e "bindind" os tipos de erros dentro da lista.
 		private List<Erro> criarListaDeErros(BindingResult bindingResult){

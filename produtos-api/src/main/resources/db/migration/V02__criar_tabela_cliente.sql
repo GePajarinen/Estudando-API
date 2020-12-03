@@ -4,7 +4,7 @@ CREATE TABLE cliente (
 	email VARCHAR(60) NOT NULL,
 	senha VARCHAR (20) NOT NULL,
 	documento VARCHAR(20) NOT NULL,
-	datacadastro DATE NOT NULL
+	datacadastro DATE
 	
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
