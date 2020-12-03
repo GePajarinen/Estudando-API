@@ -82,13 +82,9 @@ public class ClienteResource {
 				@PathVariable Long codigo, 
 				@Valid @RequestBody Cliente cliente){
 			
-			System.out.println("r-");
-			
 			Cliente clienteAtualizado = cs.atualizar(codigo, cliente);
 			
-			
 			return ResponseEntity.ok(clienteAtualizado);
-			
 		}
 	
 

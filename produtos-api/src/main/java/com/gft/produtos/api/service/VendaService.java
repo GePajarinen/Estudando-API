@@ -21,6 +21,7 @@ import com.gft.produtos.api.model.Venda;
 import com.gft.produtos.api.repository.ClienteRepository;
 import com.gft.produtos.api.repository.ProdutoRepository;
 import com.gft.produtos.api.repository.VendaRepository;
+import com.gft.produtos.api.service.exception.VendaClienteNaoExistenteException;
 
 
 @Service
@@ -45,6 +46,7 @@ public class VendaService {
 		
 	public Venda buscarVendaPeloCodigo(Long codigo) {
 		Venda vendaAtualizada = vr.findById(codigo).orElse(null);
+		
 		if (vendaAtualizada == null) {
 			throw new EmptyResultDataAccessException(1);
 		}
@@ -54,11 +56,26 @@ public class VendaService {
 
 	public Venda criarVenda(CadastroVenda cadastroVenda, List<Produto> listaProdutos) {
 		
-		System.out.println("cadastroVenda "+ cadastroVenda.getCodigo() );
+		//Se Cliente NULL
+		if (cadastroVenda.getCliente().getCodigo() == null) {
+			System.out.println("BLABLA");
+			throw new EmptyResultDataAccessException(1);
+		}
+		
+		Cliente cliente = cr.findByCodigo(cadastroVenda.getCliente().getCodigo());
+		
+		//Se Cliente não consta no cadastro
+		if(cliente == null) {
+			throw new VendaClienteNaoExistenteException();
+		}
+			
+		
+
+		System.out.println("cliente "+ cadastroVenda.getCliente().getCodigo() );
 		
 		List<Produto> listaDeProdutos = listaProdutos; 
 		List<Fornecedor> listaFornecedores = new ArrayList<Fornecedor>();
-		Cliente cliente = cr.findByCodigo(cadastroVenda.getCliente().getCodigo());
+		
 		System.out.println("cliente  "+ cliente.getNome() );
 		
 		BigDecimal  total = new BigDecimal("0.00");
