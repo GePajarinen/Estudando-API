@@ -52,7 +52,12 @@ public class ProdutoResource {
 	@PostMapping
 	public ResponseEntity<Produto> cadastrarProduto(
 			@Valid @RequestBody Produto produto, HttpServletResponse response) {
-					
+				
+		ps.addProdutoEmFornecedor(produto);
+		
+		ps.addFornecedorMiniDoProduto(produto);
+		
+		
 		Produto produtoSalvo = pr.save(produto);
 			
 		pub.publishEvent(new RecursoCriadoEvent(this, response, produtoSalvo.getCodigo()));
@@ -89,8 +94,17 @@ public class ProdutoResource {
 		@ResponseStatus(HttpStatus.NO_CONTENT)
 		public void removerProduto(
 				@PathVariable Long codigo) {
+			System.out.println("AQUI 1");
+			
+			
+			
+			
+			ps.retirarDaListaDoFornecedor(codigo);
+			System.out.println("AQUI 2");
 			
 			pr.deleteById(codigo);
+			
+			System.out.println("AQUI 3");
 		}
 	
 		

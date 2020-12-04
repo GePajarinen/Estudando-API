@@ -23,6 +23,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.gft.produtos.api.service.exception.FornecedorNaoExistenteException;
+import com.gft.produtos.api.service.exception.FornecedorVazioException;
 import com.gft.produtos.api.service.exception.ListaDeProdutosVaziaException;
 import com.gft.produtos.api.service.exception.ProdutoNaoExistenteException;
 
@@ -106,7 +108,7 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 		
 	
 			
-	//Exception especial pra essa classe. CASO Cliente não exista no cadastro
+	//CASO Cliente não exista no cadastro
 	@ExceptionHandler({ListaDeProdutosVaziaException.class})
 	public ResponseEntity<Object> handleListaDeProdutosVaziaException(ListaDeProdutosVaziaException ex) {
 		String mensagemUsuario = ms.getMessage("listaprodutos.vazia", null, LocaleContextHolder.getLocale());
@@ -115,8 +117,27 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		return ResponseEntity.badRequest().body(erros);
 	}
+	
+	
+	//CADASTRO PRODUSO SEM FORNECEDOR
+		@ExceptionHandler({FornecedorVazioException.class})
+		public ResponseEntity<Object> handleFornecedorVazioException(FornecedorVazioException ex) {
+			String mensagemUsuario = ms.getMessage("fornecedor.vazio", null, LocaleContextHolder.getLocale());
+			String mensagemDesenvolvedor = ex.toString();
+			
+			List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
+			return ResponseEntity.badRequest().body(erros);
+		}
+				
+	//CASO FORNECEDOR não exista no cadastro
+	@ExceptionHandler({FornecedorNaoExistenteException.class})
+	public ResponseEntity<Object> handleFornecedorNaoExistenteException(FornecedorNaoExistenteException ex) {
+		String mensagemUsuario = ms.getMessage("fornecedor.inexistente", null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
 		
-		
+		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		return ResponseEntity.badRequest().body(erros);
+	}
 		
 		
 		

@@ -3,6 +3,8 @@ package com.gft.produtos.api.model;
 import java.math.BigDecimal;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,11 +14,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 @Entity
 @Table(name = "produto")
@@ -50,8 +47,8 @@ public class Produto {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "fornecedor")
-	@JsonIgnore
-	private Fornecedor fornecedor;
+	//@JsonIgnore
+	private Fornecedormini fornecedor;
 	
 	@NotNull
 	@Enumerated(EnumType.STRING)
@@ -130,11 +127,11 @@ public class Produto {
 		this.promocao = promocao;
 	}
 
-	public Fornecedor getFornecedor() {
+	public Fornecedormini getFornecedor() {
 		return fornecedor;
 	}
 
-	public void setFornecedor(Fornecedor fornecedor) {
+	public void setFornecedor(Fornecedormini fornecedor) {
 		this.fornecedor = fornecedor;
 	}
 

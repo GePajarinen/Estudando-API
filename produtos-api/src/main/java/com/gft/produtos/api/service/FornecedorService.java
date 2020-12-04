@@ -6,7 +6,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.gft.produtos.api.model.Fornecedor;
+import com.gft.produtos.api.model.Fornecedormini;
 import com.gft.produtos.api.repository.FornecedorRepository;
+import com.gft.produtos.api.repository.FornecedorminiRepository;
 
 @Service
 public class FornecedorService {
@@ -15,11 +17,21 @@ public class FornecedorService {
 	@Autowired
 	private FornecedorRepository fr;
 	
+	@Autowired
+	private FornecedorminiRepository fmr;
+	
 
 
 	public Fornecedor atualizar(Long codigo, Fornecedor fornecedor) {
 		Fornecedor fornecedorAtualizado = buscarFornecedorPeloCodigo(codigo);
 		BeanUtils.copyProperties(fornecedor, fornecedorAtualizado, "codigo");
+		
+		Fornecedormini miniVelho = fmr.findAllByCodigo(codigo);
+		Fornecedormini miniAtualizado = miniVelho;
+		BeanUtils.copyProperties(miniVelho, miniAtualizado, "codigo");
+		fmr.save(miniAtualizado);
+		
+		
 		return fr.save(fornecedorAtualizado);
 	}
 
@@ -32,16 +44,19 @@ public class FornecedorService {
 		}
 		return fornecedorAtualizado;
 	}
+
+
+
+	public void salvaFornecedorMini(Fornecedor fornecedor) {
+		Fornecedormini mini = new Fornecedormini(
+				fornecedor.getCodigo(), 
+				fornecedor.getNome(), 
+				fornecedor.getCnpj());
+		
+		fmr.save(mini);
+		
+	}
 	
-	
-	/*public void procurandoListaDePordutos(Fornecedor f) {
-		
-		
-		List <Produto> listaProdutos = pr.findAllByFornecedorCodigo(f.getCodigo());
-		f.setProdutos(listaProdutos);
-		
-	}*/
-		
 		
 }
 

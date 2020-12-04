@@ -3,7 +3,7 @@ CREATE TABLE fornecedor_produtos (
 	fornecedor_codigo BIGINT(20),
 	produtos_codigo BIGINT(20),
 	
-	FOREIGN KEY (fornecedor_codigo) REFERENCES fornecedor(codigo),
+	FOREIGN KEY (fornecedor_codigo) REFERENCES fornecedormini(codigo),
 	FOREIGN KEY (produtos_codigo) REFERENCES produto(codigo)
 	
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -15,7 +15,7 @@ CREATE TABLE venda_fornecedor (
 	fornecedor_codigo BIGINT(20),
 	
 	FOREIGN KEY (venda_codigo) REFERENCES venda(codigo),
-	FOREIGN KEY (fornecedor_codigo) REFERENCES fornecedor(codigo)
+	FOREIGN KEY (fornecedor_codigo) REFERENCES fornecedormini(codigo)
 	
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -29,7 +29,6 @@ CREATE TABLE venda_produtos (
 	FOREIGN KEY (produtos_codigo) REFERENCES produto(codigo)
 	
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 
 

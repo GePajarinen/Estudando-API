@@ -35,13 +35,6 @@ public class Venda {
 	private Cliente cliente;
 	
 	
-	@OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "venda_fornecedor",
-            joinColumns = @JoinColumn(name = "venda_codigo"),
-            inverseJoinColumns = @JoinColumn(name = "fornecedor_codigo"))
-	private List<Fornecedor> fornecedores;
-	
 	
 	@NotNull
 	@OneToMany(cascade = CascadeType.ALL)
@@ -51,10 +44,18 @@ public class Venda {
             inverseJoinColumns = @JoinColumn(name = "produtos_codigo"))
 	private List<Produto> produtos;
 	
-		
+	
+	@OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "venda_fornecedor",
+            joinColumns = @JoinColumn(name = "venda_codigo"),
+            inverseJoinColumns = @JoinColumn(name = "fornecedor_codigo"))
+	private List<Fornecedormini> fornecedores;
+	
+			
 	public Venda() {}
 	
-	public Venda(Long codigo, BigDecimal valor, LocalDate datacompra, @NotNull Cliente cliente, List<Fornecedor> fornecedores,
+	public Venda(Long codigo, BigDecimal valor, LocalDate datacompra, @NotNull Cliente cliente, List<Fornecedormini> fornecedores,
 			@NotNull List<Produto> produtos) {
 		//super();
 		this.valor = valor;
@@ -98,11 +99,11 @@ public class Venda {
 		this.cliente = cliente;
 	}
 
-	public List<Fornecedor> getFornecedores() {
+	public List<Fornecedormini> getFornecedores() {
 		return fornecedores;
 	}
 
-	public void setFornecedores(List<Fornecedor> fornecedores) {
+	public void setFornecedores(List<Fornecedormini> fornecedores) {
 		this.fornecedores = fornecedores;
 	}
 

@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gft.produtos.api.event.RecursoCriadoEvent;
 import com.gft.produtos.api.model.Fornecedor;
 import com.gft.produtos.api.repository.FornecedorRepository;
+import com.gft.produtos.api.repository.FornecedorminiRepository;
 import com.gft.produtos.api.service.FornecedorService;
 
 
@@ -40,7 +41,11 @@ public class FornecedorResource {
 		
 		@Autowired
 		private FornecedorService fs;
-
+		
+		@Autowired
+		private FornecedorminiRepository fmr;
+		
+		
 			
 		//LISTAR FORNECEDORES
 		@GetMapping
@@ -56,6 +61,7 @@ public class FornecedorResource {
 				@Valid @RequestBody Fornecedor fornecedor, HttpServletResponse response) {
 			
 			Fornecedor fornecedorSalvo = fr.save(fornecedor);
+			fs.salvaFornecedorMini(fornecedor);
 				
 			pub.publishEvent(new RecursoCriadoEvent(this, response, fornecedorSalvo.getCodigo()));
 			return ResponseEntity.status(HttpStatus.CREATED).body(fornecedorSalvo);
@@ -91,6 +97,8 @@ public class FornecedorResource {
 		@ResponseStatus(HttpStatus.NO_CONTENT)
 		public void removerFornecedor(
 					@PathVariable Long codigo) {
+			
+			fmr.deleteById(codigo);
 				
 			fr.deleteById(codigo);
 		}

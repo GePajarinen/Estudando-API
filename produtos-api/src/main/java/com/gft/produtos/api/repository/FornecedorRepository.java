@@ -13,4 +13,6 @@ public interface FornecedorRepository  extends JpaRepository<Fornecedor, Long>{
 	public List<Fornecedor> findAllByOrderByNomeAsc();
 	
 	public List<Fornecedor> findAllByOrderByNomeDesc();
+
+	Fornecedor findByCodigo(Long codigo);
 }

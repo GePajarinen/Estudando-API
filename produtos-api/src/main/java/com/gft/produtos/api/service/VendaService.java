@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.gft.produtos.api.model.CadastroVenda;
 import com.gft.produtos.api.model.Cliente;
-import com.gft.produtos.api.model.Fornecedor;
+import com.gft.produtos.api.model.Fornecedormini;
 import com.gft.produtos.api.model.Produto;
 import com.gft.produtos.api.model.ProdutoListagem;
 import com.gft.produtos.api.model.Venda;
@@ -74,21 +74,14 @@ public class VendaService {
 			throw new VendaClienteNaoExistenteException();
 		}
 		
-		
-		System.out.println("cliente "+ cadastroVenda.getCliente().getCodigo() );
-		
 		List<Produto> listaDeProdutos = listaProdutos; 
-		List<Fornecedor> listaFornecedores = new ArrayList<Fornecedor>();
+		List<Fornecedormini> listaFornecedores = new ArrayList<Fornecedormini>();
 		
-		System.out.println("cliente  "+ cliente.getNome() );
 		
 		BigDecimal  total = new BigDecimal("0.00");
-		System.out.println("AQUI  ");
 		
 		for (Produto produto : listaDeProdutos) {
 			
-			System.out.println("p CODIGO "+ produto.getCodigo());
-		
 		
 			if(produto.getPromocao()) {
 				total= total.add(produto.getvalorpromo());

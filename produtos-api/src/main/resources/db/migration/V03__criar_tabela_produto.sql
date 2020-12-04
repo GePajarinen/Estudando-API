@@ -10,7 +10,7 @@ CREATE TABLE produto (
 	categoria VARCHAR(20) NOT NULL,
 	fornecedor BIGINT(20) NOT NULL,
 	
-	FOREIGN KEY (fornecedor) REFERENCES fornecedor(codigo)
+	FOREIGN KEY (fornecedor) REFERENCES fornecedormini(codigo)
 	
 	
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
