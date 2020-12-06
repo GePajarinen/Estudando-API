@@ -24,9 +24,10 @@ public class Venda {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long codigo;
 	
-	
+	@NotNull
 	private BigDecimal valor;
 	
+	@NotNull
 	private LocalDate datacompra;
 
 	@NotNull

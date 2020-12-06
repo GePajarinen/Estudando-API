@@ -29,10 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gft.produtos.api.event.RecursoCriadoEvent;
 import com.gft.produtos.api.exceptionhandler.ProdutosExceptionHandler.Erro;
 import com.gft.produtos.api.model.CadastroVenda;
-import com.gft.produtos.api.model.Cliente;
 import com.gft.produtos.api.model.Produto;
 import com.gft.produtos.api.model.Venda;
-import com.gft.produtos.api.repository.ClienteRepository;
 import com.gft.produtos.api.repository.VendaRepository;
 import com.gft.produtos.api.service.VendaService;
 import com.gft.produtos.api.service.exception.VendaClienteNaoExistenteException;
@@ -54,9 +52,7 @@ public class VendaResource {
 		@Autowired
 		private MessageSource ms;
 		
-		@Autowired
-		private ClienteRepository cr;
-		
+				
 		
 		//LISTAR VENDAS
 		@GetMapping
@@ -97,25 +93,27 @@ public class VendaResource {
 		
 		
 		//ATUALIZAR VENDA
-			@PutMapping("/{codigo}")
-			public ResponseEntity<Venda> atualizarVenda(
-					@PathVariable Long codigo, 
-					@Valid @RequestBody Venda venda){
+		@PutMapping("/{codigo}")
+		public ResponseEntity<Venda> atualizarVenda(
+				@PathVariable Long codigo, 
+				@Valid @RequestBody Venda venda){
+			
+			vs.tratandoCliente(venda);
+			
+			Venda vendaAtualizada = vs.atualizar(codigo, venda);
+			return ResponseEntity.ok(vendaAtualizada);
 				
-				Venda vendaAtualizada = vs.atualizar(codigo, venda);
-				return ResponseEntity.ok(vendaAtualizada);
-				
-			}
+		}
 		
 
 		//EXCLUIR VENDA
-			@DeleteMapping("/{codigo}")
-			@ResponseStatus(HttpStatus.NO_CONTENT)
-			public void removerVenda(
-					@PathVariable Long codigo) {
-				
-				vr.deleteById(codigo);
-			}
+		@DeleteMapping("/{codigo}")
+		@ResponseStatus(HttpStatus.NO_CONTENT)
+		public void removerVenda(
+				@PathVariable Long codigo) {
+			
+			vr.deleteById(codigo);
+		}
 		
 			
 			
@@ -150,18 +148,16 @@ public class VendaResource {
 		//BUSCAR VENDA PELO NOME CLIENTE
 		@GetMapping("/nome/{nome}")
 		public @ResponseBody List<Venda> procuraPorNomeCliente(@PathVariable Optional<String> nome){
+			
 			if(nome.isPresent()) {
-				
-				//Cliente c = cr.findByNome(nome.get());
-				
 				return vs.procurandoPeloNomeCliente(nome.get());
-			}else{
+			}
+			else{
 				return vr.findAll(); //Não funciona
 			}
 		}
 		
-		
-		
+
 		
 		//Exception especial pra essa classe. CASO Cliente não exista no cadastro
 		@ExceptionHandler({VendaClienteNaoExistenteException.class})

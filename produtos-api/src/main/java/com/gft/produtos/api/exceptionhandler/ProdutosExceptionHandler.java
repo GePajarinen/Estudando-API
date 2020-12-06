@@ -42,7 +42,6 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 		
 		String mensagemUsuario = ms.getMessage("mensagem.invalida", null, LocaleContextHolder.getLocale());
 		String mensagemDesenvolvedor = ex.getCause() !=null ? ex.getCause().toString() : ex.toString();
-		//String mensagemDesenvolvedor = ex.getCause().toString();
 		
 		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
@@ -119,7 +118,7 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 	}
 	
 	
-	//CADASTRO PRODUSO SEM FORNECEDOR
+	//CADASTRO PRODUTO SEM FORNECEDOR
 		@ExceptionHandler({FornecedorVazioException.class})
 		public ResponseEntity<Object> handleFornecedorVazioException(FornecedorVazioException ex) {
 			String mensagemUsuario = ms.getMessage("fornecedor.vazio", null, LocaleContextHolder.getLocale());

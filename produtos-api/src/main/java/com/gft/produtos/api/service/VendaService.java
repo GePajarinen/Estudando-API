@@ -147,6 +147,21 @@ public class VendaService {
 		
 		return listV;
 	}
+
+
+	//Evitando alterações no Cliente// Mas se trocar o Código, muda o cliente
+	public void tratandoCliente(Venda venda) {
+		
+		Cliente c = cr.findByCodigo(venda.getCliente().getCodigo());
+		
+		//Se cleinte nao consta: null ou não existe
+		if (c== null) {
+			throw new EmptyResultDataAccessException(1);
+		}
+		
+		venda.setCliente(c);
+		
+	}
 	
 	
 	
