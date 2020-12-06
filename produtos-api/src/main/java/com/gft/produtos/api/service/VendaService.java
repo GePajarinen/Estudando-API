@@ -133,6 +133,20 @@ public class VendaService {
 		
 		return lp;
 	}
+
+
+
+	public List<Venda> procurandoPeloNomeCliente(String nome) {
+		List<Cliente> listC = cr.findByNomeContaining(nome);
+		List<Venda> listV = new ArrayList<Venda>();
+			
+		for(Cliente c : listC) {
+			listV.addAll(vr.findAllByCliente(c));
+			
+		}
+		
+		return listV;
+	}
 	
 	
 	

@@ -10,14 +10,15 @@ import com.gft.produtos.api.model.Venda;
 public interface VendaRepository  extends JpaRepository<Venda, Long>{
 
 	
-	List<Venda> findByCodigoContaining(Long codigo);
-
 	public List<Venda> findAllByOrderByCodigoAsc();
 	
 	public List<Venda> findAllByOrderByCodigoDesc();
 
-
 	Venda findByCliente(Cliente c);
+
+	List<Venda> findByCodigo(Long codigo);
+
+	public List<Venda> findAllByCliente(Cliente c);
 
 	
 }

@@ -29,8 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gft.produtos.api.event.RecursoCriadoEvent;
 import com.gft.produtos.api.exceptionhandler.ProdutosExceptionHandler.Erro;
 import com.gft.produtos.api.model.CadastroVenda;
+import com.gft.produtos.api.model.Cliente;
 import com.gft.produtos.api.model.Produto;
 import com.gft.produtos.api.model.Venda;
+import com.gft.produtos.api.repository.ClienteRepository;
 import com.gft.produtos.api.repository.VendaRepository;
 import com.gft.produtos.api.service.VendaService;
 import com.gft.produtos.api.service.exception.VendaClienteNaoExistenteException;
@@ -51,6 +53,9 @@ public class VendaResource {
 
 		@Autowired
 		private MessageSource ms;
+		
+		@Autowired
+		private ClienteRepository cr;
 		
 		
 		//LISTAR VENDAS
@@ -131,15 +136,32 @@ public class VendaResource {
 		}
 			
 			
-		//BUSCAR VENDA POR NOME
+		//BUSCAR VENDA PELO CODIGO
 		@GetMapping("/codigo/{codigo}")
-		public @ResponseBody List<Venda> procuraPorNomeCliente(@PathVariable Optional<Long> codigo){
+		public @ResponseBody List<Venda> procuraPorCodigo(@PathVariable Optional<Long> codigo){
 			if(codigo.isPresent()) {
-				return vr.findByCodigoContaining(codigo.get());
+				return vr.findByCodigo(codigo.get());
 			}else{
 				return vr.findAll(); //Não funciona
 			}
-	}
+		}
+		
+		
+		//BUSCAR VENDA PELO NOME CLIENTE
+		@GetMapping("/nome/{nome}")
+		public @ResponseBody List<Venda> procuraPorNomeCliente(@PathVariable Optional<String> nome){
+			if(nome.isPresent()) {
+				
+				//Cliente c = cr.findByNome(nome.get());
+				
+				return vs.procurandoPeloNomeCliente(nome.get());
+			}else{
+				return vr.findAll(); //Não funciona
+			}
+		}
+		
+		
+		
 		
 		//Exception especial pra essa classe. CASO Cliente não exista no cadastro
 		@ExceptionHandler({VendaClienteNaoExistenteException.class})
