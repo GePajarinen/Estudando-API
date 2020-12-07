@@ -26,6 +26,12 @@ import com.gft.produtos.api.model.Produto;
 import com.gft.produtos.api.repository.ProdutoRepository;
 import com.gft.produtos.api.service.ProdutoService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+@Api(tags = "Produto")
 @RestController
 @RequestMapping("/api/produtos")
 public class ProdutoResource {
@@ -42,6 +48,13 @@ public class ProdutoResource {
 	
 	
 	//LISTAR PRODUTOS
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Lista de produtos")
 	@GetMapping
 	public List<Produto> listarProdutos(){
 		return pr.findAll();
@@ -49,14 +62,21 @@ public class ProdutoResource {
 
 		
 	//INSERIR PRODUTOS
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Cadastrar produto")
 	@PostMapping
 	public ResponseEntity<Produto> cadastrarProduto(
+			@ApiParam(name = "Corpo", value = "Representação de um novo produto")
 			@Valid @RequestBody Produto produto, HttpServletResponse response) {
 				
 		ps.addProdutoEmFornecedor(produto);
 		
 		ps.addFornecedorMiniDoProduto(produto);
-		
 		
 		Produto produtoSalvo = pr.save(produto);
 			
@@ -67,8 +87,16 @@ public class ProdutoResource {
 		
 		
 	//BUSCAR PRODUTO PELO ID
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Buscar produto pelo código")
 	@GetMapping("/{codigo}")
 	public ResponseEntity<Produto> buscaPeloCodigo(
+			@ApiParam(value="Código do produto", example = "4")
 			@PathVariable Long codigo) {
 		
 		Produto produto = pr.findById(codigo).orElse(null);
@@ -78,38 +106,58 @@ public class ProdutoResource {
 	
 	
 	//ATUALIZAR PRODUTO
-		@PutMapping("/{codigo}")
-		public ResponseEntity<Produto> atualizarProduto(
-				@PathVariable Long codigo, 
-				@Valid @RequestBody Produto produto){
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Atualizar cadastro do produto")
+	@PutMapping("/{codigo}")
+	public ResponseEntity<Produto> atualizarProduto(
+			@ApiParam(value="Código do produto", example = "4")
+			@PathVariable Long codigo,
 			
-			Produto produtoAtualizado = ps.atualizar(codigo, produto);
-			return ResponseEntity.ok(produtoAtualizado);
+			@ApiParam(value="Código do produto", example = "4")
+			@Valid @RequestBody Produto produto){
 			
-		}
+		Produto produtoAtualizado = ps.atualizar(codigo, produto);
+		return ResponseEntity.ok(produtoAtualizado);
+			
+	}
 	
 
 	//EXCLUIR PRODUTO
-		@DeleteMapping("/{codigo}")
-		@ResponseStatus(HttpStatus.NO_CONTENT)
-		public void removerProduto(
-				@PathVariable Long codigo) {
-			System.out.println("AQUI 1");
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Excluir produto do cadastro")
+	@DeleteMapping("/{codigo}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removerProduto(
 			
+			@ApiParam(value="Código do produto", example = "4")
+			@PathVariable Long codigo) {
 			
+		ps.retirarDaListaDoFornecedor(codigo);
 			
-			
-			ps.retirarDaListaDoFornecedor(codigo);
-			System.out.println("AQUI 2");
-			
-			pr.deleteById(codigo);
-			
-			System.out.println("AQUI 3");
-		}
+		pr.deleteById(codigo);
+		
+	}
 	
 		
 		
 	//LISTAR PRODUTOS ORDEM ALFA CRESC
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Listar produtos pelo nome em ordem alfabética crescente")
 	@GetMapping("/asc")
 	public List<Produto> ordernarAsc(){
 		List<Produto> asc = pr.findAllByOrderByNomeAsc();
@@ -118,6 +166,13 @@ public class ProdutoResource {
 	
 	
 	//LISTAR PRODUTOS ORDEM ALFA DRECR
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Listar produtos pelo nome em ordem alfabética decrescente")
 	@GetMapping("/desc")
 	public List<Produto> ordernarDesc(){
 		List<Produto> desc = pr.findAllByOrderByNomeDesc();
@@ -126,28 +181,46 @@ public class ProdutoResource {
 		
 		
 	//BUSCAR PRODUTO POR NOME
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Buscar produto pelo nome")
 	@GetMapping("/nome/{nome}")
-	public @ResponseBody List<Produto> procuraPorNome(@PathVariable Optional<String> nome){
+	public @ResponseBody List<Produto> procuraPorNome(
+			@ApiParam(value="Nome do produto", example = "Caderno")
+			@PathVariable Optional<String> nome){
+		
 		if(nome.isPresent()) {
 			return pr.findByNomeContaining(nome.get());
 		}else{
-			return pr.findAll(); //Não funciona
+			return pr.findAll(); //Não funciona //tentar return ResponseEntity.notFound().build();
 		}
 }
 	
 	
 	
 	//ATUALIZAR PRODUTO EM PROMOÇÃO
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Atualizar o status de promoção do produto")
 	@PutMapping("/{codigo}/promocao")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void atualizarPromocao(
+			@ApiParam(value="Código do produto", example = "8")
 			@PathVariable Long codigo, 
+			
+			@ApiParam(name = "Corpo", value = "Representação do produto com a promoção atualizada")
 			@RequestBody Boolean promocao) {
 		
 		ps.atualizarPromocao(codigo, promocao);
 	}
-	
-	
 	
 	
 }

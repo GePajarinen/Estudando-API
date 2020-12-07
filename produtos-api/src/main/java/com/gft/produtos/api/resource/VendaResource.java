@@ -35,138 +35,215 @@ import com.gft.produtos.api.repository.VendaRepository;
 import com.gft.produtos.api.service.VendaService;
 import com.gft.produtos.api.service.exception.VendaClienteNaoExistenteException;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+@Api(tags = "Venda")
 @RestController
 @RequestMapping("/api/vendas")
 public class VendaResource {
 
 		
-		@Autowired
-		private VendaRepository vr;
+	@Autowired
+	private VendaRepository vr;
 		
-		@Autowired
-		private ApplicationEventPublisher pub;
-		
-		@Autowired
-		private VendaService vs;
-
-		@Autowired
-		private MessageSource ms;
-		
-				
-		
-		//LISTAR VENDAS
-		@GetMapping
-		public List<Venda> listarVendas(){
-			return vr.findAll();
-		}
-
-			
-		//INSERIR VENDAS
-		@PostMapping
-		public ResponseEntity<Venda> cadastrarVenda(
-				@Valid @RequestBody CadastroVenda cadastroVenda, HttpServletResponse response) {
-			
-			System.out.println("passo 1");
-			List<Produto> p = vs.criarListaProdutos(cadastroVenda);
-			
-			Venda vendaSalva = vs.criarVenda(cadastroVenda, p);
-			System.out.println("passo 2");
-			
-			vr.save(vendaSalva);
-			
-			pub.publishEvent(new RecursoCriadoEvent(this, response, vendaSalva.getCodigo()));
-			return ResponseEntity.status(HttpStatus.CREATED).body(vendaSalva);
-					
-				
-		}
-			
-			
-		//BUSCAR VENDA PELO ID
-		@GetMapping("/{codigo}")
-		public ResponseEntity<Venda> buscaPeloCodigo(
-				@PathVariable Long codigo) {
-			
-			Venda venda = vr.findById(codigo).orElse(null);
-			return venda != null ? ResponseEntity.ok(venda) : ResponseEntity.notFound().build();
-		}
-		
-		
-		
-		//ATUALIZAR VENDA
-		@PutMapping("/{codigo}")
-		public ResponseEntity<Venda> atualizarVenda(
-				@PathVariable Long codigo, 
-				@Valid @RequestBody Venda venda){
-			
-			vs.tratandoCliente(venda);
-			
-			Venda vendaAtualizada = vs.atualizar(codigo, venda);
-			return ResponseEntity.ok(vendaAtualizada);
-				
-		}
-		
-
-		//EXCLUIR VENDA
-		@DeleteMapping("/{codigo}")
-		@ResponseStatus(HttpStatus.NO_CONTENT)
-		public void removerVenda(
-				@PathVariable Long codigo) {
-			
-			vr.deleteById(codigo);
-		}
-		
-			
-			
-		//LISTAR VENDAS PELO NOME DO CLIENTE ORDEM CRESC
-		@GetMapping("/asc")
-		public List<Venda> ordernarAsc(){
-			
-			List<Venda> asc = vr.findAll(Sort.by("cliente.nome"));
-			return asc;
-		}
-		
-		
-		//LISTAR VENDAS PELO NOME DO CLIENTE ORDEM DESC
-		@GetMapping("/desc")
-		public List<Venda> ordernarDesc(){
-			List<Venda> desc = vr.findAll(Sort.by("cliente.nome").descending());
-			return desc;
-		}
-			
-			
-		//BUSCAR VENDA PELO CODIGO
-		@GetMapping("/codigo/{codigo}")
-		public @ResponseBody List<Venda> procuraPorCodigo(@PathVariable Optional<Long> codigo){
-			if(codigo.isPresent()) {
-				return vr.findByCodigo(codigo.get());
-			}else{
-				return vr.findAll(); //Não funciona
-			}
-		}
-		
-		
-		//BUSCAR VENDA PELO NOME CLIENTE
-		@GetMapping("/nome/{nome}")
-		public @ResponseBody List<Venda> procuraPorNomeCliente(@PathVariable Optional<String> nome){
-			
-			if(nome.isPresent()) {
-				return vs.procurandoPeloNomeCliente(nome.get());
-			}
-			else{
-				return vr.findAll(); //Não funciona
-			}
-		}
-		
-
-		
-		//Exception especial pra essa classe. CASO Cliente não exista no cadastro
-		@ExceptionHandler({VendaClienteNaoExistenteException.class})
-		public ResponseEntity<Object> handleVendaClienteNaoExistenteException(VendaClienteNaoExistenteException ex) {
-			String mensagemUsuario = ms.getMessage("cliente.inexistente", null, LocaleContextHolder.getLocale());
-			String mensagemDesenvolvedor = ex.toString();
-			
-			List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
-			return ResponseEntity.badRequest().body(erros);
-		}
+	@Autowired
+	private ApplicationEventPublisher pub;
 	
+	@Autowired
+	private VendaService vs;
+
+	@Autowired
+	private MessageSource ms;
+
+				
+		
+	//LISTAR VENDAS
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Lista de vendas")
+	@GetMapping
+	public List<Venda> listarVendas(){
+		return vr.findAll();
+	}
+		
+	
+	//INSERIR VENDAS
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Cadastrar nova venda")
+	@PostMapping
+	public ResponseEntity<Venda> cadastrarVenda(
+			@ApiParam(name = "Corpo", value = "Representação de uma nova venda")
+			@Valid @RequestBody CadastroVenda cadastroVenda, HttpServletResponse response) {
+		
+		List<Produto> p = vs.criarListaProdutos(cadastroVenda);
+		
+		Venda vendaSalva = vs.criarVenda(cadastroVenda, p);
+		
+		vr.save(vendaSalva);
+		
+		pub.publishEvent(new RecursoCriadoEvent(this, response, vendaSalva.getCodigo()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(vendaSalva);
+				
+			
+	}
+		
+		
+	//BUSCAR VENDA PELO ID
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Buscar venda pelo código")
+	@GetMapping("/{codigo}")
+	public ResponseEntity<Venda> buscaPeloCodigo(
+			@ApiParam(value="Código da venda", example = "2")
+			@PathVariable Long codigo) {
+		
+		Venda venda = vr.findById(codigo).orElse(null);
+		return venda != null ? ResponseEntity.ok(venda) : ResponseEntity.notFound().build();
+	}
+	
+	
+	
+	//ATUALIZAR VENDA
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Atualizar dados da venda")
+	@PutMapping("/{codigo}")
+	public ResponseEntity<Venda> atualizarVenda(
+			@ApiParam(value="Código da venda", example = "2")
+			@PathVariable Long codigo, 
+			
+			@ApiParam(name = "Corpo", value = "Representação de uma venda atualizada")
+			@Valid @RequestBody Venda venda){
+		
+		vs.tratandoCliente(venda);
+		
+		Venda vendaAtualizada = vs.atualizar(codigo, venda);
+		return ResponseEntity.ok(vendaAtualizada);
+			
+	}
+	
+	
+	//EXCLUIR VENDA
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Excluir venda")
+	@DeleteMapping("/{codigo}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removerVenda(
+			@ApiParam(value="Código da venda", example = "2")
+			@PathVariable Long codigo) {
+		
+		vr.deleteById(codigo);
+	}
+	
+		
+		
+	//LISTAR VENDAS PELO NOME DO CLIENTE ORDEM CRESC
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Listar vendas pelo no do cliente em ordem alfabética crescente")
+	@GetMapping("/asc")
+	public List<Venda> ordernarAsc(){
+		
+		List<Venda> asc = vr.findAll(Sort.by("cliente.nome"));
+		return asc;
+	}
+	
+	
+	//LISTAR VENDAS PELO NOME DO CLIENTE ORDEM DESC
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Listar vendas pelo no do cliente em ordem alfabética decrescente")
+	@GetMapping("/desc")
+	public List<Venda> ordernarDesc(){
+		List<Venda> desc = vr.findAll(Sort.by("cliente.nome").descending());
+		return desc;
+	}
+		
+	//TROCAR PELO ATRIBUTO CODIGOPRODUTO!!!!!!!!!!!!!!!!!!!!	
+	//BUSCAR VENDA PELO CODIGO
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Buscar venda pelo no do cliente em ordem alfabética crescente")
+	@GetMapping("/codigo/{codigo}")
+	public @ResponseBody List<Venda> procuraPorCodigo(
+			@ApiParam(value="Código da venda", example = "2")
+			@PathVariable Optional<Long> codigo){
+		
+		if(codigo.isPresent()) {
+			return vr.findByCodigo(codigo.get());
+		}else{
+			return vr.findAll(); //Não funciona
+		}
+	}
+	
+	
+	//BUSCAR VENDA PELO NOME CLIENTE
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Listar vendas pelo no do cliente em ordem alfabética crescente")
+	@GetMapping("/nome/{nome}")
+	public @ResponseBody List<Venda> procuraPorNomeCliente(
+			@ApiParam(value="Nome do cliente", example = "Odo") 
+			@PathVariable Optional<String> nome){
+		
+		if(nome.isPresent()) {
+			return vs.procurandoPeloNomeCliente(nome.get());
+		}
+		else{
+			return vr.findAll(); //Não funciona
+		}
+	}
+	
+		
+	//Exception especial pra essa classe. CASO Cliente não exista no cadastro
+	@ExceptionHandler({VendaClienteNaoExistenteException.class})
+	public ResponseEntity<Object> handleVendaClienteNaoExistenteException(VendaClienteNaoExistenteException ex) {
+		String mensagemUsuario = ms.getMessage("cliente.inexistente", null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
+		
+		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		return ResponseEntity.badRequest().body(erros);
+	}
+
 }

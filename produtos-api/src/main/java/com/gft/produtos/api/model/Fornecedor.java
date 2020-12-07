@@ -11,20 +11,27 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "fornecedor")
+@ApiModel("Fornecedor")
 public class Fornecedor {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@ApiModelProperty(example="9")
 	private Long codigo;
 	
 	@NotBlank
 	@Size(min=3, max=30)
+	@ApiModelProperty(example="Leiteria")
 	private String nome;
 	
 	@NotBlank
 	@Size(min=14, max=18)
+	@ApiModelProperty(example="77.177.743/0001-77")
 	private String cnpj;
 	
 	

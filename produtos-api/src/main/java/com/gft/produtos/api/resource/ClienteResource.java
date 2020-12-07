@@ -27,6 +27,12 @@ import com.gft.produtos.api.model.Cliente;
 import com.gft.produtos.api.repository.ClienteRepository;
 import com.gft.produtos.api.service.ClienteService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+@Api(tags = "Cliente")
 @RestController
 @RequestMapping("/api/clientes")
 public class ClienteResource {
@@ -44,6 +50,13 @@ public class ClienteResource {
 	
 	
 	//LISTAR CLIENTES
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Lista de clientes")
 	@GetMapping
 	public List<Cliente> listarClientes(){
 		return cr.findAll();
@@ -51,8 +64,16 @@ public class ClienteResource {
 	
 		
 	//INSERIR CLIENTES
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Cadastrar cliente")
 	@PostMapping
 	public ResponseEntity<Cliente> cadastrarCliente(
+			@ApiParam(name = "Corpo", value = "Representação de um novo cliente")
 			@Valid @RequestBody Cliente cliente, HttpServletResponse response) {
 		
 		LocalDate data = LocalDate.now();
@@ -67,8 +88,16 @@ public class ClienteResource {
 		
 		
 	//BUSCAR CLIENTE PELO ID
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Busca de cliente pelo código")
 	@GetMapping("/{codigo}")
 	public ResponseEntity<Cliente> buscaPeloCodigo(
+			@ApiParam(value="Código do cliente", example = "5")
 			@PathVariable Long codigo) {
 		
 		Cliente cliente = cr.findById(codigo).orElse(null);
@@ -77,29 +106,54 @@ public class ClienteResource {
 	
 	
 	//ATUALIZAR CLIENTE
-		@PutMapping("/{codigo}")
-		public ResponseEntity<Cliente> atualizarCliente(
-				@PathVariable Long codigo, 
-				@Valid @RequestBody Cliente cliente){
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Atualizar cadastro de cliente")
+	@PutMapping("/{codigo}")
+	public ResponseEntity<Cliente> atualizarCliente(
+			@ApiParam(value="Código do cliente", example = "5")
+			@PathVariable Long codigo, 
 			
-			Cliente clienteAtualizado = cs.atualizar(codigo, cliente);
+			@ApiParam(name = "Corpo", value = "Representação do cliente com os dados atualizados")
+			@Valid @RequestBody Cliente cliente){
 			
-			return ResponseEntity.ok(clienteAtualizado);
-		}
+		Cliente clienteAtualizado = cs.atualizar(codigo, cliente);
+			
+		return ResponseEntity.ok(clienteAtualizado);
+	}
 	
 
 	//EXCLUIR CLIENTE
-		@DeleteMapping("/{codigo}")
-		@ResponseStatus(HttpStatus.NO_CONTENT)
-		public void removerCliente(
-				@PathVariable Long codigo) {
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Excluir cliente do cadastro")
+	@DeleteMapping("/{codigo}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removerCliente(
+			@ApiParam(value="Código do cliente", example = "10")
+			@PathVariable Long codigo) {
 			
-			cr.deleteById(codigo);
-		}
+		cr.deleteById(codigo);
+	}
 	
 		
 		
 	//LISTAR CLIENTES ORDEM ALFA CRESC
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Lista de clientes em ordem alfabética crescente")
 	@GetMapping("/asc")
 	public List<Cliente> ordernarAsc(){
 		List<Cliente> asc = cr.findAllByOrderByNomeAsc();
@@ -108,6 +162,13 @@ public class ClienteResource {
 	
 	
 	//LISTAR CLIENTES ORDEM ALFA DRECR
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Lista de clientes em ordem alfabética decrescente")
 	@GetMapping("/desc")
 	public List<Cliente> ordernarDesc(){
 		List<Cliente> desc = cr.findAllByOrderByNomeDesc();
@@ -116,12 +177,22 @@ public class ClienteResource {
 		
 		
 	//BUSCAR CLIENTE POR NOME
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Buscar cliente pelo nome")
 	@GetMapping("/nome/{nome}")
-	public @ResponseBody List<Cliente> procuraPorNome(@PathVariable Optional<String> nome){
+	public @ResponseBody List<Cliente> procuraPorNome(
+			@ApiParam(value="Nome da pessoa", example = "Julian") 
+			@PathVariable Optional<String> nome){
+		
 		if(nome.isPresent()) {
 			return cr.findByNomeContaining(nome.get());
 		}else{
-			return cr.findAll(); //Não funciona
+			return cr.findAll(); //Não funciona //tentar return ResponseEntity.notFound().build();
 		}
 	}
 	

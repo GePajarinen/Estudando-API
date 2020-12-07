@@ -4,15 +4,20 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 public class Fornecedormini {
 	
 	@Id
 	@NotNull
+	@ApiModelProperty(example="1")
 	private Long codigo;
 	
+	@ApiModelProperty(example="GFT")
 	private String nome;
 	
+	@ApiModelProperty(example="07.174.743/0001-27")
 	private String cnpj;
 	
 	public Fornecedormini() {}

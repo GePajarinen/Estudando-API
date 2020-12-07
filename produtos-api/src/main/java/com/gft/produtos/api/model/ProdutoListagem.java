@@ -2,6 +2,8 @@ package com.gft.produtos.api.model;
 
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class ProdutoListagem {
 	
 	@NotNull
@@ -9,7 +11,7 @@ public class ProdutoListagem {
 
 	
 	
-	
+	@ApiModelProperty(example="11")
 	public Long getCodigo() {
 		return codigo;
 	}

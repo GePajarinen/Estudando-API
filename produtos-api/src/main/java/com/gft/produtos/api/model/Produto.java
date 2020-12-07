@@ -15,43 +15,57 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "produto")
+@ApiModel("Produto")
 public class Produto {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@ApiModelProperty(example="11")
 	private Long codigo;
 	
 	@NotBlank
 	@Size(min=3, max=20)
+	@ApiModelProperty(example="Lápis")
 	private String nome;
 	
 	@NotBlank
+	@ApiModelProperty(example="12584")
 	private String codigoproduto;
 	
 	@NotNull
+	@ApiModelProperty(example="1.00")
 	private BigDecimal valor;
 	
 	@NotNull
+	@ApiModelProperty(example="0.66")
 	private BigDecimal valorpromo;
 	
 	@NotNull
+	@ApiModelProperty(example="1000")
 	private Long quantidade;
 	
+	@ApiModelProperty(example="lapis.jpg")
 	private String imagem;
 	
 	@NotNull
+	@ApiModelProperty(example="false")
 	private Boolean promocao;
 	
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "fornecedor")
 	//@JsonIgnore
+	@ApiModelProperty(example="1")
 	private Fornecedormini fornecedor;
 	
 	@NotNull
 	@Enumerated(EnumType.STRING)
+	@ApiModelProperty(example="Papelaria")
 	private Categoria categoria;
 	
 	

@@ -16,18 +16,25 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "venda")
+@ApiModel("Venda")
 public class Venda {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@ApiModelProperty(example="3")
 	private Long codigo;
 	
 	@NotNull
+	@ApiModelProperty(example="1.00")
 	private BigDecimal valor;
 	
 	@NotNull
+	@ApiModelProperty(example="2020-12-03")
 	private LocalDate datacompra;
 
 	@NotNull

@@ -10,30 +10,40 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+
 @Entity
 @Table(name = "cliente")
+@ApiModel("Cliente")
 public class Cliente {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@ApiModelProperty(example="11")
 	private Long codigo;
 	
 	@NotBlank
 	@Size(min=10, max=100)
+	@ApiModelProperty(example="Aline Mafra")
 	private String nome;
 	
 	@NotBlank
+	@ApiModelProperty(example="aline.mafra@hotmail.com")
 	private String email;
 	
 	@NotBlank
 	@Size(min=3, max=20)
+	@ApiModelProperty(example="Mafra1235")
 	private String senha;
 	
 	@NotBlank
-	@Size(min=8, max=14)  
+	@Size(min=8, max=14) 
+	@ApiModelProperty(example="236.323.326-89")
 	private String documento;
 	
-	
+	@ApiModelProperty(example="2020-12-05")
 	private LocalDate datacadastro;
 
 	

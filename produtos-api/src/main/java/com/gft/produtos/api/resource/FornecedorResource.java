@@ -27,111 +27,178 @@ import com.gft.produtos.api.repository.FornecedorRepository;
 import com.gft.produtos.api.repository.FornecedorminiRepository;
 import com.gft.produtos.api.service.FornecedorService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
+@Api(tags = "Fornecedor")
 @RestController
 @RequestMapping("/api/fornecedores")
 public class FornecedorResource {
 
 		
-		@Autowired
-		private FornecedorRepository fr;
+	@Autowired
+	private FornecedorRepository fr;
+	
+	@Autowired
+	private ApplicationEventPublisher pub;
+	
+	@Autowired
+	private FornecedorService fs;
+	
+	@Autowired
+	private FornecedorminiRepository fmr;
+	
+	
 		
-		@Autowired
-		private ApplicationEventPublisher pub;
-		
-		@Autowired
-		private FornecedorService fs;
-		
-		@Autowired
-		private FornecedorminiRepository fmr;
-		
-		
+	//LISTAR FORNECEDORES
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Lista de fornecedores")
+	@GetMapping
+	public List<Fornecedor> listarFornecedores(){
+	
+		return fr.findAll();
+	}
 			
-		//LISTAR FORNECEDORES
-		@GetMapping
-		public List<Fornecedor> listarFornecedores(){
+	//INSERIR FORNECEDORES
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Cadastrar fornecedor")
+	@PostMapping
+	public ResponseEntity<Fornecedor> cadastrarFornecedor(
+			@ApiParam(name = "Corpo", value = "Representação de um novo fornecedor")
+			@Valid @RequestBody Fornecedor fornecedor, HttpServletResponse response) {
 		
-			return fr.findAll();
-		}
-
+		Fornecedor fornecedorSalvo = fr.save(fornecedor);
+		fs.salvaFornecedorMini(fornecedor);
 			
-		//INSERIR FORNECEDORES
-		@PostMapping
-		public ResponseEntity<Fornecedor> cadastrarFornecedor(
-				@Valid @RequestBody Fornecedor fornecedor, HttpServletResponse response) {
+		pub.publishEvent(new RecursoCriadoEvent(this, response, fornecedorSalvo.getCodigo()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(fornecedorSalvo);
 			
-			Fornecedor fornecedorSalvo = fr.save(fornecedor);
-			fs.salvaFornecedorMini(fornecedor);
-				
-			pub.publishEvent(new RecursoCriadoEvent(this, response, fornecedorSalvo.getCodigo()));
-			return ResponseEntity.status(HttpStatus.CREATED).body(fornecedorSalvo);
-				
-			}
-			
-			
-		//BUSCAR FORNECEDOR PELO ID
-		@GetMapping("/{codigo}")
-		public ResponseEntity<Fornecedor> buscaPeloCodigo(
-				@PathVariable Long codigo) {
-			
-			Fornecedor fornecedor = fr.findById(codigo).orElse(null);
-			return fornecedor != null ? ResponseEntity.ok(fornecedor) : ResponseEntity.notFound().build();
-		}
-		
-		
-		
-		//ATUALIZAR FORNECEDOR
-		@PutMapping("/{codigo}")
-		public ResponseEntity<Fornecedor> atualizarFornecedor(
-				@PathVariable Long codigo, 
-				@Valid @RequestBody Fornecedor fornecedor){
-				
-			Fornecedor fornecedorAtualizado = fs.atualizar(codigo, fornecedor);
-			return ResponseEntity.ok(fornecedorAtualizado);
-				
 		}
 		
-
+		
+	//BUSCAR FORNECEDOR PELO ID
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Buscar fornecedor pelo código")
+	@GetMapping("/{codigo}")
+	public ResponseEntity<Fornecedor> buscaPeloCodigo(
+			@ApiParam(value="Código do fornecedor", example = "3")
+			@PathVariable Long codigo) {
+		
+		Fornecedor fornecedor = fr.findById(codigo).orElse(null);
+		return fornecedor != null ? ResponseEntity.ok(fornecedor) : ResponseEntity.notFound().build();
+	}
+	
+	
+	
+	//ATUALIZAR FORNECEDOR
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Atualizar cadastro do fornecedores")
+	@PutMapping("/{codigo}")
+	public ResponseEntity<Fornecedor> atualizarFornecedor(
+			@ApiParam(value="Código do fornecedor", example = "3")
+			@PathVariable Long codigo, 
+			
+			@ApiParam(name = "Corpo", value = "Representação do fornecedor atualizado")
+			@Valid @RequestBody Fornecedor fornecedor){
+			
+		Fornecedor fornecedorAtualizado = fs.atualizar(codigo, fornecedor);
+		return ResponseEntity.ok(fornecedorAtualizado);
+			
+	}
+	
 		//EXCLUIR FORNECEDOR
-		@DeleteMapping("/{codigo}")
-		@ResponseStatus(HttpStatus.NO_CONTENT)
-		public void removerFornecedor(
-					@PathVariable Long codigo) {
-			
-			fmr.deleteById(codigo);
-				
-			fr.deleteById(codigo);
-		}
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Excluir fornecedor do cadastro")
+	@DeleteMapping("/{codigo}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removerFornecedor(
+			@ApiParam(value="Código do fornecedor", example = "3")	
+			@PathVariable Long codigo) {
 		
+		fmr.deleteById(codigo);
 			
-			
-		//LISTAR FORNECEDORES ORDEM ALFA CRESC
-		@GetMapping("/asc")
-		public List<Fornecedor> ordernarAsc(){
-			List<Fornecedor> asc = fr.findAllByOrderByNomeAsc();
-			return asc;
-		}
+		fr.deleteById(codigo);
+	}
+	
 		
 		
-		//LISTAR FORNECEDORES ORDEM ALFA DRECR
-		@GetMapping("/desc")
-		public List<Fornecedor> ordernarDesc(){
-			List<Fornecedor> desc = fr.findAllByOrderByNomeDesc();
-			return desc;
-		}
-			
-			
-		//BUSCAR FORNECEDOR POR NOME
-		@GetMapping("/nome/{nome}")
-		public @ResponseBody List<Fornecedor> procuraPorNome(@PathVariable Optional<String> nome){
-			if(nome.isPresent()) {
-				return fr.findByNomeContaining(nome.get());
-			}else{
-				return fr.findAll(); //Não funciona
-			}
+	//LISTAR FORNECEDORES ORDEM ALFA CRESC
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Lista de fornecedores pelo nome em ordem alfabética crescente")
+	@GetMapping("/asc")
+	public List<Fornecedor> ordernarAsc(){
+		List<Fornecedor> asc = fr.findAllByOrderByNomeAsc();
+		return asc;
+	}
+	
+	
+	//LISTAR FORNECEDORES ORDEM ALFA DRECR
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Lista de fornecedores pelo nome em ordem alfabética decrescente")
+	@GetMapping("/desc")
+	public List<Fornecedor> ordernarDesc(){
+		List<Fornecedor> desc = fr.findAllByOrderByNomeDesc();
+		return desc;
 	}
 		
 		
-		
+	//BUSCAR FORNECEDOR POR NOME
+	@ApiImplicitParam(name = "Authorization", 
+			value = "Bearer Token", 
+			required = true, 
+			allowEmptyValue = false, 
+			paramType = "header", 
+			example = "Bearer access_token")
+	@ApiOperation("Busca de fornecedor pelo nome")
+	@GetMapping("/nome/{nome}")
+	public @ResponseBody List<Fornecedor> procuraPorNome(
+			@ApiParam(value="Nome do fornecedor", example = "Bayer")
+			@PathVariable Optional<String> nome){
+		if(nome.isPresent()) {
+			return fr.findByNomeContaining(nome.get());
+		}else{
+			return fr.findAll(); //Não funciona
+		}
+	}
 	
-}
+	
+}	
+
+
