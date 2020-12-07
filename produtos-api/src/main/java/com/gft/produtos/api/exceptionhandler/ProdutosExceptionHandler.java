@@ -23,6 +23,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.gft.produtos.api.service.exception.FornecedorNaoContemProdutoSelecionadoException;
 import com.gft.produtos.api.service.exception.FornecedorNaoExistenteException;
 import com.gft.produtos.api.service.exception.FornecedorVazioException;
 import com.gft.produtos.api.service.exception.ListaDeProdutosVaziaException;
@@ -139,7 +140,15 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 	}
 		
 		
+	//CASO FORNECEDOR não tenha PRODUTO no cadastro
+	@ExceptionHandler({FornecedorNaoContemProdutoSelecionadoException.class})
+	public ResponseEntity<Object> handleFornecedorNaoContemProdutoSelecionadoException(FornecedorNaoContemProdutoSelecionadoException ex) {
+		String mensagemUsuario = ms.getMessage("fornecedor.semproduto", null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
 		
+		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		return ResponseEntity.badRequest().body(erros);
+	}	
 		
 		
 	//Criando a lista de erros e "bindind" os tipos de erros dentro da lista.

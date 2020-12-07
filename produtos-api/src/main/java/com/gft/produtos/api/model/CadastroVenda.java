@@ -18,6 +18,9 @@ public class CadastroVenda {
 	
 	@NotNull
 	private List<ProdutoListagem> produtos;
+	
+	@NotNull
+	private List<Fornecedormini> fornecedores;
 
 	
 	
@@ -45,7 +48,15 @@ public class CadastroVenda {
 		this.codigo = codigo;
 	}
 
+	public List<Fornecedormini> getFornecedores() {
+		return fornecedores;
+	}
 
+	public void setFornecedores(List<Fornecedormini> fornecedores) {
+		this.fornecedores = fornecedores;
+	}
+
+	
 	
 
 	

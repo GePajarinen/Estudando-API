@@ -87,9 +87,12 @@ public class VendaResource {
 			@ApiParam(name = "Corpo", value = "Representação de uma nova venda")
 			@Valid @RequestBody CadastroVenda cadastroVenda, HttpServletResponse response) {
 		
-		List<Produto> p = vs.criarListaProdutos(cadastroVenda);
+		List<Produto> listaP = vs.criarListaProdutos(cadastroVenda);
 		
-		Venda vendaSalva = vs.criarVenda(cadastroVenda, p);
+		vs.validandoFornecedores(cadastroVenda, listaP );
+		
+		
+		Venda vendaSalva = vs.criarVenda(cadastroVenda, listaP);
 		
 		vr.save(vendaSalva);
 		

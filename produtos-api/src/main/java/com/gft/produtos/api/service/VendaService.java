@@ -14,13 +14,17 @@ import org.springframework.stereotype.Service;
 
 import com.gft.produtos.api.model.CadastroVenda;
 import com.gft.produtos.api.model.Cliente;
+import com.gft.produtos.api.model.Fornecedor;
 import com.gft.produtos.api.model.Fornecedormini;
 import com.gft.produtos.api.model.Produto;
 import com.gft.produtos.api.model.ProdutoListagem;
 import com.gft.produtos.api.model.Venda;
 import com.gft.produtos.api.repository.ClienteRepository;
+import com.gft.produtos.api.repository.FornecedorRepository;
 import com.gft.produtos.api.repository.ProdutoRepository;
 import com.gft.produtos.api.repository.VendaRepository;
+import com.gft.produtos.api.service.exception.FornecedorNaoContemProdutoSelecionadoException;
+import com.gft.produtos.api.service.exception.FornecedorNaoExistenteException;
 import com.gft.produtos.api.service.exception.ListaDeProdutosVaziaException;
 import com.gft.produtos.api.service.exception.ProdutoNaoExistenteException;
 import com.gft.produtos.api.service.exception.VendaClienteNaoExistenteException;
@@ -38,7 +42,8 @@ public class VendaService {
 	@Autowired
 	private ClienteRepository cr;
 	
-	
+	@Autowired
+	private FornecedorRepository fr;
 	
 	
 	public Venda atualizar(Long codigo, Venda venda) {
@@ -133,6 +138,35 @@ public class VendaService {
 		
 		return lp;
 	}
+	
+	
+	
+	
+	public void validandoFornecedores(CadastroVenda cadastroVenda, List<Produto> listaP) {
+
+		List <Fornecedormini> mini = cadastroVenda.getFornecedores();
+		
+		
+		//Se fornecedor exite no cadastro.
+		for(Fornecedormini m : mini) {
+			Fornecedor f = fr.findByCodigo(m.getCodigo());
+			if (f != null) {
+				
+				System.out.println("F! "+ f.getNome());
+				
+				if(!f.getProdutos().stream().anyMatch(listaP::contains)) {
+					throw new FornecedorNaoContemProdutoSelecionadoException(null, null);
+					//throw new FornecedorNaoContemProdutoSelecionadoException(f, listaP);
+				}
+				
+			}else {
+				throw new FornecedorNaoExistenteException();
+			}
+			System.out.println("MINI "+ m.getCodigo());
+		}
+		
+			
+	}
 
 
 
@@ -162,6 +196,10 @@ public class VendaService {
 		venda.setCliente(c);
 		
 	}
+
+
+
+
 	
 	
 	

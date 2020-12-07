@@ -35,6 +35,22 @@ CREATE TABLE venda_produtos (
 INSERT INTO fornecedor_produtos (fornecedor_codigo, produtos_codigo) values (1, 1);
 INSERT INTO fornecedor_produtos (fornecedor_codigo, produtos_codigo) values (1, 4);
 INSERT INTO fornecedor_produtos (fornecedor_codigo, produtos_codigo) values (1, 5);
+INSERT INTO fornecedor_produtos (fornecedor_codigo, produtos_codigo) values (2, 6);
+INSERT INTO fornecedor_produtos (fornecedor_codigo, produtos_codigo) values (4, 7);
+INSERT INTO fornecedor_produtos (fornecedor_codigo, produtos_codigo) values (5, 8);
+INSERT INTO fornecedor_produtos (fornecedor_codigo, produtos_codigo) values (7, 3);
+INSERT INTO fornecedor_produtos (fornecedor_codigo, produtos_codigo) values (8, 2);
+INSERT INTO fornecedor_produtos (fornecedor_codigo, produtos_codigo) values (8, 9);
+INSERT INTO fornecedor_produtos (fornecedor_codigo, produtos_codigo) values (8, 10);
+
+
+
+
+
+
+
+
+
 
 INSERT INTO venda_fornecedor (venda_codigo, fornecedor_codigo) values (1, 1);
 INSERT INTO venda_fornecedor (venda_codigo, fornecedor_codigo) values (2, 1);
