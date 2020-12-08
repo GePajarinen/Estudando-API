@@ -82,10 +82,8 @@ public class VendaService {
 		}
 		vendaAtualizada.setProdutos(newlistP);
 		
-		
 		//BeanUtils.copyProperties(venda, vendaAtualizada, "codigo");
 		return vr.save(vendaAtualizada);
-	
 	
 	}
 

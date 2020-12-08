@@ -120,7 +120,9 @@ public class ProdutoResource {
 			
 			@ApiParam(value="Código do produto", example = "4")
 			@Valid @RequestBody Produto produto){
-			
+		
+		ps.verificarFornecedor(produto);
+		
 		Produto produtoAtualizado = ps.atualizar(codigo, produto);
 		return ResponseEntity.ok(produtoAtualizado);
 			

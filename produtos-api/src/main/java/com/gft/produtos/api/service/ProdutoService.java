@@ -28,6 +28,8 @@ public class ProdutoService {
 	@Autowired
 	private FornecedorminiRepository fmr;
 
+	
+	
 	public Produto atualizar(Long codigo, Produto produto) {
 		Produto produtoAtualizado = buscarProdutoPeloCodigo(codigo);
 		BeanUtils.copyProperties(produto, produtoAtualizado, "codigo");
@@ -96,6 +98,17 @@ public class ProdutoService {
 		System.out.println("LISTA ANTES "+listaP.size());
 		listaP.remove(p);
 		System.out.println("LISTA DEPOIS "+listaP.size());
+		
+	}
+
+	public void verificarFornecedor(Produto produto) {
+		
+		Fornecedormini f = fmr.findByCodigo(produto.getFornecedor().getCodigo());
+		if (f==null) {
+			throw new FornecedorNaoExistenteException();
+		}
+		
+		produto.setFornecedor(f);
 		
 	}
 	
