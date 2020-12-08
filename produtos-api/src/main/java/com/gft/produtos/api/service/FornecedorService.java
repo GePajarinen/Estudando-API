@@ -1,5 +1,7 @@
 package com.gft.produtos.api.service;
 
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.gft.produtos.api.model.Fornecedor;
 import com.gft.produtos.api.model.Fornecedormini;
+import com.gft.produtos.api.model.Produto;
 import com.gft.produtos.api.repository.FornecedorRepository;
 import com.gft.produtos.api.repository.FornecedorminiRepository;
 
@@ -54,6 +57,16 @@ public class FornecedorService {
 				fornecedor.getCnpj());
 		
 		fmr.save(mini);
+		
+	}
+
+
+
+	public void manterProdutos(Long codigo, Fornecedor fornecedor) {
+		
+		Fornecedor f = fr.findByCodigo(codigo);
+		List<Produto> listP = f.getProdutos();
+		fornecedor.setProdutos(listP);
 		
 	}
 	

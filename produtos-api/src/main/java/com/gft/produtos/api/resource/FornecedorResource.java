@@ -122,6 +122,8 @@ public class FornecedorResource {
 			
 			@ApiParam(name = "Corpo", value = "Representação do fornecedor atualizado")
 			@Valid @RequestBody Fornecedor fornecedor){
+		
+		fs.manterProdutos(codigo, fornecedor );
 			
 		Fornecedor fornecedorAtualizado = fs.atualizar(codigo, fornecedor);
 		return ResponseEntity.ok(fornecedorAtualizado);
