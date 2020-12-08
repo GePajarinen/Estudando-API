@@ -133,11 +133,9 @@ public class VendaResource {
 			@PathVariable Long codigo, 
 			
 			@ApiParam(name = "Corpo", value = "Representação de uma venda atualizada")
-			@Valid @RequestBody Venda venda){
+			@Valid @RequestBody CadastroVenda cadastroVenda){
 		
-		vs.tratandoCliente(venda);
-		
-		Venda vendaAtualizada = vs.atualizar(codigo, venda);
+		Venda vendaAtualizada = vs.atualizar(codigo, cadastroVenda);
 		return ResponseEntity.ok(vendaAtualizada);
 			
 	}

@@ -29,7 +29,7 @@ public class Venda {
 	@ApiModelProperty(example="3")
 	private Long codigo;
 	
-	@NotNull
+	
 	@ApiModelProperty(example="1.00")
 	private BigDecimal valor;
 	

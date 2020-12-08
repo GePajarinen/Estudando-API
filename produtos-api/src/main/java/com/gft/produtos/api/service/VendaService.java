@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,7 @@ import com.gft.produtos.api.model.ProdutoListagem;
 import com.gft.produtos.api.model.Venda;
 import com.gft.produtos.api.repository.ClienteRepository;
 import com.gft.produtos.api.repository.FornecedorRepository;
+import com.gft.produtos.api.repository.FornecedorminiRepository;
 import com.gft.produtos.api.repository.ProdutoRepository;
 import com.gft.produtos.api.repository.VendaRepository;
 import com.gft.produtos.api.service.exception.FornecedorNaoContemProdutoSelecionadoException;
@@ -44,11 +44,49 @@ public class VendaService {
 	@Autowired
 	private FornecedorRepository fr;
 	
+	@Autowired
+	private FornecedorminiRepository fmr;
 	
-	public Venda atualizar(Long codigo, Venda venda) {
+	
+	public Venda atualizar(Long codigo, CadastroVenda cadastroVenda) {
 		Venda vendaAtualizada = buscarVendaPeloCodigo(codigo);
-		BeanUtils.copyProperties(venda, vendaAtualizada, "codigo");
+		
+		Cliente c = cr.findByCodigo(cadastroVenda.getCliente().getCodigo());
+		if (c == null) {
+			throw new VendaClienteNaoExistenteException();
+		}
+		vendaAtualizada.setCliente(c);
+		
+		vendaAtualizada.setdatacompra(cadastroVenda.getDataVenda());
+		
+		List<Fornecedormini> newlistF = new ArrayList<Fornecedormini>();
+		for(Fornecedormini m: cadastroVenda.getFornecedores()) {
+			Fornecedormini mini = fmr.findByCodigo(m.getCodigo());
+			
+			if(mini == null) {
+				throw new FornecedorNaoExistenteException();
+			}
+			
+			newlistF.add(mini);
+		}
+		vendaAtualizada.setFornecedores(newlistF);
+		
+		List<Produto> newlistP = new ArrayList<Produto>();
+		for(ProdutoListagem p: cadastroVenda.getProdutos()) {
+			Produto produto = pr.findByCodigo(p.getCodigo());
+			
+			if(produto == null) {
+				throw new ProdutoNaoExistenteException();
+			}
+			newlistP.add(produto);
+		}
+		vendaAtualizada.setProdutos(newlistP);
+		
+		
+		//BeanUtils.copyProperties(venda, vendaAtualizada, "codigo");
 		return vr.save(vendaAtualizada);
+	
+	
 	}
 
 	
@@ -173,7 +211,7 @@ public class VendaService {
 		return listV;
 	}
 
-
+/*
 	//Evitando alterações no Cliente// Mas se trocar o Código, muda o cliente
 	public void tratandoCliente(Venda venda) {
 		
@@ -186,7 +224,7 @@ public class VendaService {
 		
 		venda.setCliente(c);
 		
-	}
+	}*/
 
 
 

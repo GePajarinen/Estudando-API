@@ -8,4 +8,6 @@ public interface FornecedorminiRepository  extends JpaRepository<Fornecedormini,
 
 	Fornecedormini findAllByCodigo(Long codigo);
 
+	Fornecedormini findByCodigo(Long codigo);
+
 }
