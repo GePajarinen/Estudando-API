@@ -89,8 +89,7 @@ public class VendaResource {
 		
 		List<Produto> listaP = vs.criarListaProdutos(cadastroVenda);
 		
-		vs.validandoFornecedores(cadastroVenda, listaP );
-		
+		vs.validandoFornecedoresEProdutos(cadastroVenda, listaP );
 		
 		Venda vendaSalva = vs.criarVenda(cadastroVenda, listaP);
 		
@@ -98,8 +97,6 @@ public class VendaResource {
 		
 		pub.publishEvent(new RecursoCriadoEvent(this, response, vendaSalva.getCodigo()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(vendaSalva);
-				
-			
 	}
 		
 		
@@ -195,27 +192,6 @@ public class VendaResource {
 		return desc;
 	}
 		
-	//TROCAR PELO ATRIBUTO CODIGOPRODUTO!!!!!!!!!!!!!!!!!!!!	
-	//BUSCAR VENDA PELO CODIGO
-	@ApiImplicitParam(name = "Authorization", 
-			value = "Bearer Token", 
-			required = true, 
-			allowEmptyValue = false, 
-			paramType = "header", 
-			example = "Bearer access_token")
-	@ApiOperation("Buscar venda pelo no do cliente em ordem alfabética crescente")
-	@GetMapping("/codigo/{codigo}")
-	public @ResponseBody List<Venda> procuraPorCodigo(
-			@ApiParam(value="Código da venda", example = "2")
-			@PathVariable Optional<Long> codigo){
-		
-		if(codigo.isPresent()) {
-			return vr.findByCodigo(codigo.get());
-		}else{
-			return vr.findAll(); //Não funciona
-		}
-	}
-	
 	
 	//BUSCAR VENDA PELO NOME CLIENTE
 	@ApiImplicitParam(name = "Authorization", 

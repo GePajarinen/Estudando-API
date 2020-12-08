@@ -142,24 +142,23 @@ public class VendaService {
 	
 	
 	
-	public void validandoFornecedores(CadastroVenda cadastroVenda, List<Produto> listaP) {
+	public void validandoFornecedoresEProdutos(CadastroVenda cadastroVenda, List<Produto> listaP) {
 
 		List <Fornecedormini> mini = cadastroVenda.getFornecedores();
 		
-		
-		//Se fornecedor exite no cadastro.
-		for(Fornecedormini m : mini) {
+		for(Fornecedormini m : mini) {//Passando por cada fornecedor da lista de venda
 			Fornecedor f = fr.findByCodigo(m.getCodigo());
 			if (f != null) {
 				
-				System.out.println("F! "+ f.getNome());
-				
-				if(!f.getProdutos().stream().anyMatch(listaP::contains)) {
-					throw new FornecedorNaoContemProdutoSelecionadoException(null, null);
-					//throw new FornecedorNaoContemProdutoSelecionadoException(f, listaP);
+				for(Produto p: listaP) {//Passando por cada produto da lista de venda
+						
+					if(!f.getProdutos().contains(p)) {
+						throw new FornecedorNaoContemProdutoSelecionadoException(
+							"Fornecedor "+ f.getCodigo()+ " não tem o produto: "
+							+ p.getCodigo() );}
 				}
-				
-			}else {
+							
+			}else {//Se fornecedor exite no cadastro.
 				throw new FornecedorNaoExistenteException();
 			}
 			System.out.println("MINI "+ m.getCodigo());
