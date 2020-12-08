@@ -1,7 +1,6 @@
 package com.gft.produtos.api.service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,8 +99,8 @@ public class VendaService {
 		}
 		
 		
-		LocalDate data = LocalDate.now();
-		Venda venda = new Venda(cadastroVenda.getCodigo(), total, data, cliente, listaFornecedores, listaDeProdutos);
+		//LocalDate data = LocalDate.now();
+		Venda venda = new Venda(cadastroVenda.getCodigo(), total, cadastroVenda.getDataVenda(), cliente, listaFornecedores, listaDeProdutos);
 		
 		return venda;
 	}
@@ -140,8 +139,6 @@ public class VendaService {
 	}
 	
 	
-	
-	
 	public void validandoFornecedoresEProdutos(CadastroVenda cadastroVenda, List<Produto> listaP) {
 
 		List <Fornecedormini> mini = cadastroVenda.getFornecedores();
@@ -157,14 +154,11 @@ public class VendaService {
 							"Fornecedor "+ f.getCodigo()+ " não tem o produto: "
 							+ p.getCodigo() );}
 				}
-							
 			}else {//Se fornecedor exite no cadastro.
 				throw new FornecedorNaoExistenteException();
 			}
 			System.out.println("MINI "+ m.getCodigo());
 		}
-		
-			
 	}
 
 
@@ -175,9 +169,7 @@ public class VendaService {
 			
 		for(Cliente c : listC) {
 			listV.addAll(vr.findAllByCliente(c));
-			
 		}
-		
 		return listV;
 	}
 

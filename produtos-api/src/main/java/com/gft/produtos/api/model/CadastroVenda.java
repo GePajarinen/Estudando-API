@@ -1,11 +1,14 @@
 package com.gft.produtos.api.model;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+
+import io.swagger.annotations.ApiModelProperty;
 
 public class CadastroVenda {
 
@@ -22,6 +25,11 @@ public class CadastroVenda {
 	@NotNull
 	private List<Fornecedormini> fornecedores;
 
+	@NotNull
+	@ApiModelProperty(example="2020-12-05")
+	private LocalDate dataVenda;
+	
+	
 	
 	
 	public Cliente getCliente() {
@@ -56,8 +64,13 @@ public class CadastroVenda {
 		this.fornecedores = fornecedores;
 	}
 
-	
-	
+	public LocalDate getDataVenda() {
+		return dataVenda;
+	}
 
-	
+	public void setDataVenda(LocalDate dataVenda) {
+		this.dataVenda = dataVenda;
+	}
+
+
 }
