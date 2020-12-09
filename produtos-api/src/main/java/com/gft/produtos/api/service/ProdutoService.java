@@ -15,6 +15,7 @@ import com.gft.produtos.api.repository.FornecedorminiRepository;
 import com.gft.produtos.api.repository.ProdutoRepository;
 import com.gft.produtos.api.service.exception.FornecedorNaoExistenteException;
 import com.gft.produtos.api.service.exception.FornecedorVazioException;
+import com.gft.produtos.api.service.exception.ProdutoNaoExistenteException;
 
 @Service
 public class ProdutoService {
@@ -91,7 +92,8 @@ public class ProdutoService {
 		
 		Produto p = pr.findByCodigo(codigo);
 		if (p == null) { 
-			throw new EmptyResultDataAccessException(1);
+			throw new ProdutoNaoExistenteException("O Produto de código " +
+													codigo + " não existe no cadastro.");
 		}
 		
 		System.out.println("pCODIGO"+ p.getCodigo());
