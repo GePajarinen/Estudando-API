@@ -59,32 +59,15 @@ public class VendaService {
 		
 		vendaAtualizada.setdatacompra(cadastroVenda.getDataVenda());
 		
-		List<Fornecedormini> newlistF = new ArrayList<Fornecedormini>();
-		for(Fornecedormini m: cadastroVenda.getFornecedores()) {
-			Fornecedormini mini = fmr.findByCodigo(m.getCodigo());
-			
-			if(mini == null) {
-				throw new FornecedorNaoExistenteException();
-			}
-			
-			newlistF.add(mini);
-		}
-		vendaAtualizada.setFornecedores(newlistF);
-		
-		List<Produto> newlistP = new ArrayList<Produto>();
-		for(ProdutoListagem p: cadastroVenda.getProdutos()) {
-			Produto produto = pr.findByCodigo(p.getCodigo());
-			
-			if(produto == null) {
-				throw new ProdutoNaoExistenteException();
-			}
-			newlistP.add(produto);
-		}
+		List<Produto> newlistP = criarListaProdutos(cadastroVenda);
 		vendaAtualizada.setProdutos(newlistP);
 		
-		//BeanUtils.copyProperties(venda, vendaAtualizada, "codigo");
+		List<Fornecedormini> newlistF = listandoFornecedoresmini(newlistP);
+		vendaAtualizada.setFornecedores(newlistF);
+		
+		vendaAtualizada.setValor(somandoValoresProdutos(newlistP));
+		
 		return vr.save(vendaAtualizada);
-	
 	}
 
 		
@@ -115,8 +98,35 @@ public class VendaService {
 			throw new VendaClienteNaoExistenteException();
 		}
 		
+		BigDecimal  total = somandoValoresProdutos(listaProdutos);
+		
+		List<Fornecedormini> listaFornecedores = listandoFornecedoresmini(listaProdutos);
+		
+		Venda venda = new Venda(cadastroVenda.getCodigo(), total, cadastroVenda.getDataVenda(), cliente, listaFornecedores, listaProdutos);
+		
+		return venda;
+	}
+
+
+	private List<Fornecedormini> listandoFornecedoresmini(List<Produto> listaProdutos) {
+		
 		List<Produto> listaDeProdutos = listaProdutos; 
 		List<Fornecedormini> listaFornecedores = new ArrayList<Fornecedormini>();
+			
+		for (Produto produto : listaDeProdutos) {
+			Fornecedormini mini = fmr.findByCodigo(produto.getFornecedor().getCodigo());
+			if(mini == null) {
+				throw new FornecedorNaoExistenteException();
+			}
+			listaFornecedores.add(mini);
+		}
+		return listaFornecedores;
+	}
+
+
+	private BigDecimal somandoValoresProdutos(List<Produto> listaProdutos) {
+		
+		List<Produto> listaDeProdutos = listaProdutos; 
 		
 		//Somando os valores dos produtos
 		BigDecimal  total = new BigDecimal("0.00");
@@ -131,16 +141,11 @@ public class VendaService {
 				System.out.println("total " + total);
 			}
 			
-			listaFornecedores.add(produto.getFornecedor());
 		}
-		
-		//LocalDate data = LocalDate.now();
-		Venda venda = new Venda(cadastroVenda.getCodigo(), total, cadastroVenda.getDataVenda(), cliente, listaFornecedores, listaDeProdutos);
-		
-		return venda;
+		return total;
 	}
 
-
+	
 	public List<Produto> criarListaProdutos(@Valid CadastroVenda cadastroVenda) {
 		/*
 		 * Criando a lista de Produtos à partir da lista DTO ProdutosListagem 
@@ -166,7 +171,7 @@ public class VendaService {
 			
 			//Se Produto não consta no cadastro
 			if(p == null) {
-				throw new ProdutoNaoExistenteException();
+				throw new ProdutoNaoExistenteException(null);
 			}
 			lp.add(p);
 		}
@@ -178,7 +183,6 @@ public class VendaService {
 		/*
 		 * Se Fornecedor indicado na Venda não tem algum dos Produtos da Venda
 		 * */
-
 		List <Fornecedormini> mini = cadastroVenda.getFornecedores();
 		
 		for(Fornecedormini m : mini) {//Passando por cada fornecedor da lista de venda

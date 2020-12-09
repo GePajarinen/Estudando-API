@@ -133,6 +133,12 @@ public class VendaResource {
 			@ApiParam(name = "Corpo", value = "Representação de uma venda atualizada")
 			@Valid @RequestBody CadastroVenda cadastroVenda){
 		
+		List<Produto> listaP = vs.criarListaProdutos(cadastroVenda); 
+		//Criando a lista de Produtos a partir do DTO ProdutosListage
+		
+		vs.validandoFornecedoresEProdutos(cadastroVenda, listaP); 
+		//Avaliando se Fornecedor tem os Produtos
+		
 		Venda vendaAtualizada = vs.atualizar(codigo, cadastroVenda);
 		return ResponseEntity.ok(vendaAtualizada);
 	}
