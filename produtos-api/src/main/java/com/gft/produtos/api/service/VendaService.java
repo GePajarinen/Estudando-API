@@ -49,19 +49,29 @@ public class VendaService {
 	private FornecedorminiRepository fmr;
 	
 	
+	public void codigoClienteNull(Long codigo) {
+		if(codigo == null) {
+			throw new ClienteNaoIndicadoException();
+		}
+	}
+	
+	public void clienteNoCadastro(Cliente cliente) {
+		if (cliente == null) {
+			throw new VendaClienteNaoExistenteException();
+		}
+	}
+	
 	public Venda atualizar(Long codigo, CadastroVenda cadastroVenda) {
 		Venda vendaAtualizada = buscarVendaPeloCodigo(codigo);
 		
-		if(cadastroVenda.getCliente().getCodigo() == null) {
-			throw new ClienteNaoIndicadoException();
-		}
+		//Se Cliente.codigo for NULL
+		codigoClienteNull(cadastroVenda.getCliente().getCodigo());
 		
 		Cliente c = cr.findByCodigo(cadastroVenda.getCliente().getCodigo());
 		
+		//Se Cliente não consta no cadastro
+		clienteNoCadastro(c);
 		
-		if (c == null) {
-			throw new VendaClienteNaoExistenteException();
-		}
 		vendaAtualizada.setCliente(c);
 		
 		vendaAtualizada.setdatacompra(cadastroVenda.getDataVenda());
@@ -94,16 +104,12 @@ public class VendaService {
 		 * */
 		
 		//Se Cliente.codigo for NULL
-		if (cadastroVenda.getCliente().getCodigo() == null) {
-			throw new ClienteNaoIndicadoException();
-		}
+		codigoClienteNull(cadastroVenda.getCliente().getCodigo());
 		
 		Cliente cliente = cr.findByCodigo(cadastroVenda.getCliente().getCodigo());
 		
 		//Se Cliente não consta no cadastro
-		if(cliente == null) {
-			throw new VendaClienteNaoExistenteException();
-		}
+		clienteNoCadastro(cliente);
 		
 		BigDecimal  total = somandoValoresProdutos(listaProdutos);
 		
@@ -119,12 +125,14 @@ public class VendaService {
 		
 		List<Produto> listaDeProdutos = listaProdutos; 
 		List<Fornecedormini> listaFornecedores = new ArrayList<Fornecedormini>();
-			
+				
 		for (Produto produto : listaDeProdutos) {
 			Fornecedormini mini = fmr.findByCodigo(produto.getFornecedor().getCodigo());
+			
 			if(mini == null) {
 				throw new FornecedorNaoExistenteException();
 			}
+			
 			listaFornecedores.add(mini);
 		}
 		return listaFornecedores;

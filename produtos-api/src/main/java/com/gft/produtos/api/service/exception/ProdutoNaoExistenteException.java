@@ -7,6 +7,4 @@ public class ProdutoNaoExistenteException extends RuntimeException {
 	public ProdutoNaoExistenteException(String msg){
         super(msg);
 	}
-	
-
 }
