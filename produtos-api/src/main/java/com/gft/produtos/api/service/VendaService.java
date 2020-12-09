@@ -22,6 +22,7 @@ import com.gft.produtos.api.repository.FornecedorRepository;
 import com.gft.produtos.api.repository.FornecedorminiRepository;
 import com.gft.produtos.api.repository.ProdutoRepository;
 import com.gft.produtos.api.repository.VendaRepository;
+import com.gft.produtos.api.service.exception.ClienteNaoIndicadoException;
 import com.gft.produtos.api.service.exception.FornecedorNaoContemProdutoSelecionadoException;
 import com.gft.produtos.api.service.exception.FornecedorNaoExistenteException;
 import com.gft.produtos.api.service.exception.ListaDeProdutosVaziaException;
@@ -51,7 +52,13 @@ public class VendaService {
 	public Venda atualizar(Long codigo, CadastroVenda cadastroVenda) {
 		Venda vendaAtualizada = buscarVendaPeloCodigo(codigo);
 		
+		if(cadastroVenda.getCliente().getCodigo() == null) {
+			throw new ClienteNaoIndicadoException();
+		}
+		
 		Cliente c = cr.findByCodigo(cadastroVenda.getCliente().getCodigo());
+		
+		
 		if (c == null) {
 			throw new VendaClienteNaoExistenteException();
 		}
@@ -88,7 +95,7 @@ public class VendaService {
 		
 		//Se Cliente.codigo for NULL
 		if (cadastroVenda.getCliente().getCodigo() == null) {
-			throw new EmptyResultDataAccessException(1);
+			throw new ClienteNaoIndicadoException();
 		}
 		
 		Cliente cliente = cr.findByCodigo(cadastroVenda.getCliente().getCodigo());

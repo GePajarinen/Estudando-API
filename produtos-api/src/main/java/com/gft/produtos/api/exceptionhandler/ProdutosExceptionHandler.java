@@ -23,6 +23,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.gft.produtos.api.service.exception.ClienteNaoIndicadoException;
 import com.gft.produtos.api.service.exception.FornecedorNaoContemProdutoSelecionadoException;
 import com.gft.produtos.api.service.exception.FornecedorNaoExistenteException;
 import com.gft.produtos.api.service.exception.FornecedorVazioException;
@@ -149,45 +150,53 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		return ResponseEntity.badRequest().body(erros);
 	}	
+	
+	
+	//CÓDIGO Cliente null em VENDA
+	@ExceptionHandler({ClienteNaoIndicadoException.class})
+	public ResponseEntity<Object> handleClienteNaoIndicadoException(ClienteNaoIndicadoException ex) {
+		String mensagemUsuario = ms.getMessage("codigo.cliente.null", null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
 		
+		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		return ResponseEntity.badRequest().body(erros);
+	}	
+	
 		
 	//Criando a lista de erros e "bindind" os tipos de erros dentro da lista.
-		private List<Erro> criarListaDeErros(BindingResult bindingResult){
-			List<Erro> erros = new ArrayList<>();
-			
-			for(FieldError fieldError : bindingResult.getFieldErrors()) {
-				String mensagemUsuario = ms.getMessage(fieldError, LocaleContextHolder.getLocale());
-				String mensagemDesenvolvedor = fieldError.toString();
-				erros.add(new Erro(mensagemUsuario, mensagemDesenvolvedor));
-			}
-			
-			return erros;
+	private List<Erro> criarListaDeErros(BindingResult bindingResult){
+		List<Erro> erros = new ArrayList<>();
+		
+		for(FieldError fieldError : bindingResult.getFieldErrors()) {
+			String mensagemUsuario = ms.getMessage(fieldError, LocaleContextHolder.getLocale());
+			String mensagemDesenvolvedor = fieldError.toString();
+			erros.add(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		}
 		
+		return erros;
+	}
+		
 
 		
-		//Classe de Erros para usuário e desenvolvedor
-		public static class Erro {
-			
-			private String mensagemUsuario;
-			private String mensagemDesenvolvedor;
-			
-			public Erro(String mensagemUsuario, String mensagemDesenvolvedor) {
-				super();
-				this.mensagemUsuario = mensagemUsuario;
-				this.mensagemDesenvolvedor = mensagemDesenvolvedor;
-			}
-
+	//Classe de Erros para usuário e desenvolvedor
+	public static class Erro {
+		
+		private String mensagemUsuario;
+		private String mensagemDesenvolvedor;
+		
+		public Erro(String mensagemUsuario, String mensagemDesenvolvedor) {
+			super();
+			this.mensagemUsuario = mensagemUsuario;
+			this.mensagemDesenvolvedor = mensagemDesenvolvedor;
+		}
 			public String getMensagemUsuario() {
-				return mensagemUsuario;
-			}
-
-			public String getMensagemDesenvolvedor() {
-				return mensagemDesenvolvedor;
-			}
-			
+			return mensagemUsuario;
 		}
-			
+			public String getMensagemDesenvolvedor() {
+			return mensagemDesenvolvedor;
+		}
+		
+	}
 	
 	
 }
