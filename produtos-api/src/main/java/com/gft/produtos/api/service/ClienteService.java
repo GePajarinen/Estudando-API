@@ -15,11 +15,12 @@ public class ClienteService {
 	@Autowired
 	private ClienteRepository cr;
 
+	
 	public Cliente atualizar(Long codigo, Cliente cliente) {
 		
 		Cliente clienteAtualizado = buscarClientePeloCodigo(codigo);
 		
-		cliente.setdatacadastro(clienteAtualizado.getdatacadastro());
+		cliente.setdatacadastro(clienteAtualizado.getdatacadastro()); //Para a data na Atualização ficar igual à data do Cadastro.
 		
 		BeanUtils.copyProperties(cliente, clienteAtualizado, "codigo");
 		return cr.save(clienteAtualizado);

@@ -27,7 +27,6 @@ public class ProdutoService {
 	
 	@Autowired
 	private FornecedorminiRepository fmr;
-
 	
 	
 	public Produto atualizar(Long codigo, Produto produto) {
@@ -36,8 +35,12 @@ public class ProdutoService {
 		return pr.save(produtoAtualizado);
 	}
 
-	//Faltava um endpoint pra esse
+	
 	public void atualizarPromocao(Long codigo, Boolean promocao) {
+		/*
+		 * Para atualziar só o status da Promoção em PRODUTO
+		 * */
+		
 		Produto produtoAtualizado = pr.findById(codigo).orElse(null);
 		if (produtoAtualizado == null) {
 			throw new EmptyResultDataAccessException(1);
@@ -46,6 +49,7 @@ public class ProdutoService {
 		produtoAtualizado.setPromocao(promocao);
 		pr.save(produtoAtualizado);
 	}
+	
 	
 	public Produto buscarProdutoPeloCodigo(Long codigo) {
 		Produto produtoAtualizado = pr.findById(codigo).orElse(null);
@@ -58,35 +62,35 @@ public class ProdutoService {
 
 	public void addProdutoEmFornecedor( Produto produto) {
 		
-		System.out.println("FORNECEDOR "+produto.getFornecedor().getCodigo() );
-				
-		if (produto.getFornecedor().getCodigo() == null) {
+		if (produto.getFornecedor().getCodigo() == null) {//Se Fornecedor estiver vazio
 			throw new FornecedorVazioException();
 		}
 		
 		Fornecedor fornecedor = fr.findByCodigo(produto.getFornecedor().getCodigo());
 		
-		if (fornecedor == null) {
+		if (fornecedor == null) { //Se Fornecedor não existe no cadastro
 			throw new FornecedorNaoExistenteException();
 		}
 		
 		List<Produto> listaP = fornecedor.getProdutos();
 		listaP.add(produto);
-		
 	}
 
+	
 	public void addFornecedorMiniDoProduto(Produto produto) {
 		
-		Fornecedormini fmini = fmr.findAllByCodigo(produto.getFornecedor().getCodigo());
+		Fornecedormini fmini = fmr.findByCodigo(produto.getFornecedor().getCodigo());
 		produto.setFornecedor(fmini);
-		
 	}
 
+	
 	public void retirarDaListaDoFornecedor(Long codigo) {
-		
+		/*
+		 * Retirar produto deletado da lista do Fornecedor
+		 * */
 		
 		Produto p = pr.findByCodigo(codigo);
-		if (p == null) {
+		if (p == null) { 
 			throw new EmptyResultDataAccessException(1);
 		}
 		
@@ -94,20 +98,48 @@ public class ProdutoService {
 		
 		Fornecedor f = fr.findByCodigo(p.getFornecedor().getCodigo());
 		System.out.println("FORN "+ p.getFornecedor().getCodigo());
+		
 		List<Produto> listaP = f.getProdutos();
 		System.out.println("LISTA ANTES "+listaP.size());
+		
 		listaP.remove(p);
 		System.out.println("LISTA DEPOIS "+listaP.size());
 		
 	}
 
-	public void verificarFornecedor(Produto produto) {
+	
+	public void verificarFornecedor(Produto produto) { 
+		/*
+		 * Verificando Fornecedor dentro da ATUALIZAÇÃO.
+		 * E devolver os dados compeltos do Fornecedormini
+		 * para dentro de produto Atualizado.
+		 * */
 		
 		Fornecedormini f = fmr.findByCodigo(produto.getFornecedor().getCodigo());
-		if (f==null) {
+		if (f==null) { 
 			throw new FornecedorNaoExistenteException();
 		}
 		
+		List<Fornecedor> listaF = fr.findAll();
+		
+		System.out.println(listaF.size());
+		
+		//Tentando mudar o fornecedor se houver troca
+		/* 
+		for(Fornecedor fornecedor : listaF) {
+			List<Produto> produtos = fornecedor.getProdutos();
+			if (produtos.contains(produto)) {
+				System.out.println("TEM O PRODUTO!!!");
+				produtos.remove(produto);
+			}
+		}
+		
+		//Adicioando o produto em outro fornecedor, se houve troca
+		Fornecedor fornecedorReal = fr.findByCodigo(f.getCodigo());
+		List<Produto> listP = fornecedorReal.getProdutos();
+		listP.add(produto);*/
+		
+			
 		produto.setFornecedor(f);
 		
 	}

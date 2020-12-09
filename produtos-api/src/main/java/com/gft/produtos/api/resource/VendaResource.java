@@ -45,7 +45,7 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping("/api/vendas")
 public class VendaResource {
 
-		
+	
 	@Autowired
 	private VendaRepository vr;
 		
@@ -57,7 +57,6 @@ public class VendaResource {
 
 	@Autowired
 	private MessageSource ms;
-
 				
 		
 	//LISTAR VENDAS
@@ -87,11 +86,11 @@ public class VendaResource {
 			@ApiParam(name = "Corpo", value = "Representação de uma nova venda")
 			@Valid @RequestBody CadastroVenda cadastroVenda, HttpServletResponse response) {
 		
-		List<Produto> listaP = vs.criarListaProdutos(cadastroVenda);
+		List<Produto> listaP = vs.criarListaProdutos(cadastroVenda); //Criando a lista de Produtos a partir do DTO ProdutosListagem
 		
-		vs.validandoFornecedoresEProdutos(cadastroVenda, listaP );
+		vs.validandoFornecedoresEProdutos(cadastroVenda, listaP ); //Avaliando se Fornecedor tem os Produtos
 		
-		Venda vendaSalva = vs.criarVenda(cadastroVenda, listaP);
+		Venda vendaSalva = vs.criarVenda(cadastroVenda, listaP); //Instanciando a Venda
 		
 		vr.save(vendaSalva);
 		
@@ -118,7 +117,6 @@ public class VendaResource {
 	}
 	
 	
-	
 	//ATUALIZAR VENDA
 	@ApiImplicitParam(name = "Authorization", 
 			value = "Bearer Token", 
@@ -137,7 +135,6 @@ public class VendaResource {
 		
 		Venda vendaAtualizada = vs.atualizar(codigo, cadastroVenda);
 		return ResponseEntity.ok(vendaAtualizada);
-			
 	}
 	
 	
@@ -158,7 +155,6 @@ public class VendaResource {
 		vr.deleteById(codigo);
 	}
 	
-		
 		
 	//LISTAR VENDAS PELO NOME DO CLIENTE ORDEM CRESC
 	@ApiImplicitParam(name = "Authorization", 
@@ -208,7 +204,7 @@ public class VendaResource {
 			return vs.procurandoPeloNomeCliente(nome.get());
 		}
 		else{
-			return vr.findAll(); //Não funciona
+			return vr.findAll(); //pra não ficar sem return List. Mas vou ver um erro pra isso
 		}
 	}
 	

@@ -24,20 +24,17 @@ public class FornecedorService {
 	private FornecedorminiRepository fmr;
 	
 
-
 	public Fornecedor atualizar(Long codigo, Fornecedor fornecedor) {
 		Fornecedor fornecedorAtualizado = buscarFornecedorPeloCodigo(codigo);
 		BeanUtils.copyProperties(fornecedor, fornecedorAtualizado, "codigo");
 		
-		Fornecedormini miniVelho = fmr.findAllByCodigo(codigo);
+		Fornecedormini miniVelho = fmr.findByCodigo(codigo);
 		Fornecedormini miniAtualizado = miniVelho;
 		BeanUtils.copyProperties(miniVelho, miniAtualizado, "codigo");
 		fmr.save(miniAtualizado);
 		
-		
 		return fr.save(fornecedorAtualizado);
 	}
-
 		
 				
 	public Fornecedor buscarFornecedorPeloCodigo(Long codigo) {
@@ -49,25 +46,28 @@ public class FornecedorService {
 	}
 
 
-
 	public void salvaFornecedorMini(Fornecedor fornecedor) {
+		/*
+		 * Instanciar Fornecedormini durante a instância de novo Fornecedor.
+		 * 
+		 * */
 		Fornecedormini mini = new Fornecedormini(
 				fornecedor.getCodigo(), 
 				fornecedor.getNome(), 
 				fornecedor.getCnpj());
 		
 		fmr.save(mini);
-		
 	}
 
 
-
 	public void manterProdutos(Long codigo, Fornecedor fornecedor) {
-		
+		/*
+		 *Dentro de Atualização.
+		 *Pra não perder a lista de produtos após a atualização.
+		 * */
 		Fornecedor f = fr.findByCodigo(codigo);
 		List<Produto> listP = f.getProdutos();
 		fornecedor.setProdutos(listP);
-		
 	}
 	
 		

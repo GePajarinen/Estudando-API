@@ -42,18 +42,15 @@ public class Venda {
 	@JoinColumn(name = "cliente")
 	private Cliente cliente;
 	
-	
-	
 	@NotNull
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "venda_produtos",
             joinColumns = @JoinColumn(name = "venda_codigo"),
             inverseJoinColumns = @JoinColumn(name = "produtos_codigo"))
 	private List<Produto> produtos;
 	
-	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "venda_fornecedor",
             joinColumns = @JoinColumn(name = "venda_codigo"),

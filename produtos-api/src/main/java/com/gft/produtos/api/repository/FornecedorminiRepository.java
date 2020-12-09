@@ -6,7 +6,7 @@ import com.gft.produtos.api.model.Fornecedormini;
 
 public interface FornecedorminiRepository  extends JpaRepository<Fornecedormini, Long> {
 
-	Fornecedormini findAllByCodigo(Long codigo);
+
 
 	Fornecedormini findByCodigo(Long codigo);
 

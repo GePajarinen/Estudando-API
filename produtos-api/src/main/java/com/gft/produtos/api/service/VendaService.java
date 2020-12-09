@@ -87,7 +87,6 @@ public class VendaService {
 	
 	}
 
-	
 		
 	public Venda buscarVendaPeloCodigo(Long codigo) {
 		Venda vendaAtualizada = vr.findById(codigo).orElse(null);
@@ -98,11 +97,13 @@ public class VendaService {
 		return vendaAtualizada;
 	}
 
-
 	
 	public Venda criarVenda(CadastroVenda cadastroVenda, List<Produto> listaProdutos) {
+		/*
+		 * Instanciar VENDA através do DTO CadastroVenda
+		 * */
 		
-		//Se Cliente NULL
+		//Se Cliente.codigo for NULL
 		if (cadastroVenda.getCliente().getCodigo() == null) {
 			throw new EmptyResultDataAccessException(1);
 		}
@@ -117,11 +118,10 @@ public class VendaService {
 		List<Produto> listaDeProdutos = listaProdutos; 
 		List<Fornecedormini> listaFornecedores = new ArrayList<Fornecedormini>();
 		
-		
+		//Somando os valores dos produtos
 		BigDecimal  total = new BigDecimal("0.00");
 		
 		for (Produto produto : listaDeProdutos) {
-			
 		
 			if(produto.getPromocao()) {
 				total= total.add(produto.getvalorpromo());
@@ -134,7 +134,6 @@ public class VendaService {
 			listaFornecedores.add(produto.getFornecedor());
 		}
 		
-		
 		//LocalDate data = LocalDate.now();
 		Venda venda = new Venda(cadastroVenda.getCodigo(), total, cadastroVenda.getDataVenda(), cliente, listaFornecedores, listaDeProdutos);
 		
@@ -142,12 +141,14 @@ public class VendaService {
 	}
 
 
-
 	public List<Produto> criarListaProdutos(@Valid CadastroVenda cadastroVenda) {
+		/*
+		 * Criando a lista de Produtos à partir da lista DTO ProdutosListagem 
+		 * que veio de CadastroVenda
+		 * */
 		
 		List<Produto> lp = new ArrayList<Produto>();
 		List<ProdutoListagem> listagem = cadastroVenda.getProdutos();
-		
 		
 		//Se Lista de Produtos Estiver vazia
 		if (listagem.size() == 0) {
@@ -167,15 +168,16 @@ public class VendaService {
 			if(p == null) {
 				throw new ProdutoNaoExistenteException();
 			}
-			
 			lp.add(p);
 		}
-		
 		return lp;
 	}
 	
 	
 	public void validandoFornecedoresEProdutos(CadastroVenda cadastroVenda, List<Produto> listaP) {
+		/*
+		 * Se Fornecedor indicado na Venda não tem algum dos Produtos da Venda
+		 * */
 
 		List <Fornecedormini> mini = cadastroVenda.getFornecedores();
 		
@@ -198,7 +200,6 @@ public class VendaService {
 	}
 
 
-
 	public List<Venda> procurandoPeloNomeCliente(String nome) {
 		List<Cliente> listC = cr.findByNomeContaining(nome);
 		List<Venda> listV = new ArrayList<Venda>();
@@ -209,28 +210,6 @@ public class VendaService {
 		return listV;
 	}
 
-/*
-	//Evitando alterações no Cliente// Mas se trocar o Código, muda o cliente
-	public void tratandoCliente(Venda venda) {
-		
-		Cliente c = cr.findByCodigo(venda.getCliente().getCodigo());
-		
-		//Se cleinte nao consta: null ou não existe
-		if (c== null) {
-			throw new EmptyResultDataAccessException(1);
-		}
-		
-		venda.setCliente(c);
-		
-	}*/
-
-
-
-
-	
-	
-	
-	
 	
 }
 

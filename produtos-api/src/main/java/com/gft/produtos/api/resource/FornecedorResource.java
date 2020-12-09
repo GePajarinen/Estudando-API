@@ -50,7 +50,6 @@ public class FornecedorResource {
 	@Autowired
 	private FornecedorminiRepository fmr;
 	
-	
 		
 	//LISTAR FORNECEDORES
 	@ApiImplicitParam(name = "Authorization", 
@@ -66,6 +65,7 @@ public class FornecedorResource {
 		return fr.findAll();
 	}
 			
+	
 	//INSERIR FORNECEDORES
 	@ApiImplicitParam(name = "Authorization", 
 			value = "Bearer Token", 
@@ -80,7 +80,7 @@ public class FornecedorResource {
 			@Valid @RequestBody Fornecedor fornecedor, HttpServletResponse response) {
 		
 		Fornecedor fornecedorSalvo = fr.save(fornecedor);
-		fs.salvaFornecedorMini(fornecedor);
+		fs.salvaFornecedorMini(fornecedor);//Instanciar Fornecedormini
 			
 		pub.publishEvent(new RecursoCriadoEvent(this, response, fornecedorSalvo.getCodigo()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(fornecedorSalvo);
@@ -123,14 +123,15 @@ public class FornecedorResource {
 			@ApiParam(name = "Corpo", value = "Representação do fornecedor atualizado")
 			@Valid @RequestBody Fornecedor fornecedor){
 		
-		fs.manterProdutos(codigo, fornecedor );
+		fs.manterProdutos(codigo, fornecedor );//Pra não perder a lista de produtos na atualização
 			
 		Fornecedor fornecedorAtualizado = fs.atualizar(codigo, fornecedor);
 		return ResponseEntity.ok(fornecedorAtualizado);
 			
 	}
 	
-		//EXCLUIR FORNECEDOR
+	
+	//EXCLUIR FORNECEDOR
 	@ApiImplicitParam(name = "Authorization", 
 			value = "Bearer Token", 
 			required = true, 
@@ -144,12 +145,11 @@ public class FornecedorResource {
 			@ApiParam(value="Código do fornecedor", example = "3")	
 			@PathVariable Long codigo) {
 		
-		fmr.deleteById(codigo);
+		fmr.deleteById(codigo); //Deletar taambém o Fornecedormini
 			
 		fr.deleteById(codigo);
 	}
 	
-		
 		
 	//LISTAR FORNECEDORES ORDEM ALFA CRESC
 	@ApiImplicitParam(name = "Authorization", 
@@ -196,7 +196,7 @@ public class FornecedorResource {
 		if(nome.isPresent()) {
 			return fr.findByNomeContaining(nome.get());
 		}else{
-			return fr.findAll(); //Não funciona
+			return fr.findAll(); //pra não ficar sem return List. Mas vou ver um erro pra isso
 		}
 	}
 	

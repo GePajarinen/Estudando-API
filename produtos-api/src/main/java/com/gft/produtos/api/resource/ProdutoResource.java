@@ -44,7 +44,6 @@ public class ProdutoResource {
 	
 	@Autowired
 	private ProdutoService ps;
-
 	
 	
 	//LISTAR PRODUTOS
@@ -74,9 +73,9 @@ public class ProdutoResource {
 			@ApiParam(name = "Corpo", value = "Representação de um novo produto")
 			@Valid @RequestBody Produto produto, HttpServletResponse response) {
 				
-		ps.addProdutoEmFornecedor(produto);
+		ps.addProdutoEmFornecedor(produto); //Adicionar produto na lista do Fornecedor
 		
-		ps.addFornecedorMiniDoProduto(produto);
+		ps.addFornecedorMiniDoProduto(produto);//Relaciona o Fornecedormini ao produto
 		
 		Produto produtoSalvo = pr.save(produto);
 			
@@ -104,7 +103,6 @@ public class ProdutoResource {
 	}
 	
 	
-	
 	//ATUALIZAR PRODUTO
 	@ApiImplicitParam(name = "Authorization", 
 			value = "Bearer Token", 
@@ -121,7 +119,7 @@ public class ProdutoResource {
 			@ApiParam(value="Código do produto", example = "4")
 			@Valid @RequestBody Produto produto){
 		
-		ps.verificarFornecedor(produto);
+		ps.verificarFornecedor(produto); //Tratando se Fornecedor for NULL ou errado
 		
 		Produto produtoAtualizado = ps.atualizar(codigo, produto);
 		return ResponseEntity.ok(produtoAtualizado);
@@ -144,13 +142,11 @@ public class ProdutoResource {
 			@ApiParam(value="Código do produto", example = "4")
 			@PathVariable Long codigo) {
 			
-		ps.retirarDaListaDoFornecedor(codigo);
+		ps.retirarDaListaDoFornecedor(codigo); //Retira Produto da lista do Fornecedor
 			
 		pr.deleteById(codigo);
-		
 	}
 	
-		
 		
 	//LISTAR PRODUTOS ORDEM ALFA CRESC
 	@ApiImplicitParam(name = "Authorization", 
@@ -198,10 +194,9 @@ public class ProdutoResource {
 		if(nome.isPresent()) {
 			return pr.findByNomeContaining(nome.get());
 		}else{
-			return pr.findAll(); //Não funciona //tentar return ResponseEntity.notFound().build();
+			return pr.findAll(); //pra não ficar sem return List. Mas vou ver um erro pra isso
 		}
-}
-	
+	}
 	
 	
 	//ATUALIZAR PRODUTO EM PROMOÇÃO

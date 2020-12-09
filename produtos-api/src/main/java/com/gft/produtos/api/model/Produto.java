@@ -8,7 +8,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
@@ -57,10 +56,8 @@ public class Produto {
 	private Boolean promocao;
 	
 	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "fornecedor")
-	//@JsonIgnore
 	@ApiModelProperty(example="1")
+	@ManyToOne
 	private Fornecedormini fornecedor;
 	
 	@NotNull

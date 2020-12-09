@@ -48,7 +48,6 @@ public class ClienteResource {
 	private ClienteService cs;
 
 	
-	
 	//LISTAR CLIENTES
 	@ApiImplicitParam(name = "Authorization", 
 			value = "Bearer Token", 
@@ -145,7 +144,6 @@ public class ClienteResource {
 	}
 	
 		
-		
 	//LISTAR CLIENTES ORDEM ALFA CRESC
 	@ApiImplicitParam(name = "Authorization", 
 			value = "Bearer Token", 
@@ -192,7 +190,7 @@ public class ClienteResource {
 		if(nome.isPresent()) {
 			return cr.findByNomeContaining(nome.get());
 		}else{
-			return cr.findAll(); //Não funciona //tentar return ResponseEntity.notFound().build();
+			return cr.findAll(); //pra não ficar sem return List. Mas vou ver um erro pra isso
 		}
 	}
 	
