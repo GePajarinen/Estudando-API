@@ -9,6 +9,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,14 +32,15 @@ import com.gft.produtos.api.service.ClienteService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Api(tags = "Cliente")
 @RestController
 @RequestMapping("/api/clientes")
 public class ClienteResource {
-
 		
 	@Autowired
 	private ClienteRepository cr;
@@ -49,26 +53,40 @@ public class ClienteResource {
 
 	
 	//LISTAR CLIENTES
-	@ApiImplicitParam(name = "Authorization", 
+	@ApiImplicitParams(   
+		{@ApiImplicitParam(name = "Authorization", 
 			value = "Bearer Token", 
 			required = true, 
 			allowEmptyValue = false, 
 			paramType = "header", 
-			example = "Bearer access_token")
+			example = "Bearer access_token"),
+		@ApiImplicitParam(name = "page", 
+			dataType = "integer", 
+			paramType = "query",
+	    	value = "Pagina a ser carregada", 
+	    	defaultValue = "0"),
+		@ApiImplicitParam(name = "size", 
+			dataType = "integer", 
+			paramType = "query",
+	    	value = "Quantidade de registros", 
+	    	defaultValue = "3")})
 	@ApiOperation("Lista de clientes")
 	@GetMapping
-	public List<Cliente> listarClientes(){
-		return cr.findAll();
+	public Page<Cliente> listarClientes(
+			@PageableDefault(page = 0, size = 3) 
+			@ApiIgnore Pageable paginacao){
+		 
+		return cr.findAll(paginacao);
 	}
 	
 		
 	//INSERIR CLIENTES
 	@ApiImplicitParam(name = "Authorization", 
-			value = "Bearer Token", 
-			required = true, 
-			allowEmptyValue = false, 
-			paramType = "header", 
-			example = "Bearer access_token")
+				value = "Bearer Token", 
+				required = true, 
+				allowEmptyValue = false, 
+				paramType = "header", 
+				example = "Bearer access_token")
 	@ApiOperation("Cadastrar cliente")
 	@PostMapping
 	public ResponseEntity<Cliente> cadastrarCliente(
@@ -82,8 +100,7 @@ public class ClienteResource {
 		
 		pub.publishEvent(new RecursoCriadoEvent(this, response, clienteSalvo.getCodigo()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(clienteSalvo);
-			
-		}
+	}
 		
 		
 	//BUSCAR CLIENTE PELO ID

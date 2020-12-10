@@ -41,10 +41,11 @@ public class ProdutoService {
 		/*
 		 * Para atualziar só o status da Promoção em PRODUTO
 		 * */
-		
+				
 		Produto produtoAtualizado = pr.findById(codigo).orElse(null);
+		//Se mandar código inválido
 		if (produtoAtualizado == null) {
-			throw new EmptyResultDataAccessException(1);
+			throw new ProdutoNaoExistenteException("O Produto "+ codigo + " não consta no cadastro.");
 		}
 		
 		produtoAtualizado.setPromocao(promocao);
@@ -122,9 +123,7 @@ public class ProdutoService {
 			throw new FornecedorNaoExistenteException();
 		}
 		
-		List<Fornecedor> listaF = fr.findAll();
-		
-		System.out.println(listaF.size());
+		//List<Fornecedor> listaF = fr.findAll();
 		
 		//Tentando mudar o fornecedor se houver troca
 		/* 

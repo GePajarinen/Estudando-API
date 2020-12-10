@@ -30,13 +30,13 @@ import com.gft.produtos.api.service.exception.FornecedorNaoExistenteException;
 import com.gft.produtos.api.service.exception.FornecedorVazioException;
 import com.gft.produtos.api.service.exception.ListaDeProdutosVaziaException;
 import com.gft.produtos.api.service.exception.ProdutoNaoExistenteException;
+import com.gft.produtos.api.service.exception.VendaClienteNaoExistenteException;
 
 @ControllerAdvice
 public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 	
 	@Autowired
 	private MessageSource ms;
-	
 
 
 	@Override
@@ -48,7 +48,6 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 		
 		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
-		
 	}
 	
 	
@@ -57,19 +56,17 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,org.springframework.http.HttpHeaders headers, HttpStatus status, WebRequest request){
 		List<Erro> erros = criarListaDeErros(ex.getBindingResult());
 		return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
-		
 	}
 	
 	//Quando tenta deletar OU atualizar o que não existe.
-		@ExceptionHandler({EmptyResultDataAccessException.class})
-		public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, WebRequest request) {
-			String mensagemUsuario = ms.getMessage("recurso.nao-encontrado", null, LocaleContextHolder.getLocale());
-			String mensagemDesenvolvedor = ex.toString(); 
-			
-			List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
-			return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
-			
-		}
+	@ExceptionHandler({EmptyResultDataAccessException.class})
+	public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, WebRequest request) {
+		String mensagemUsuario = ms.getMessage("recurso.nao-encontrado", null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString(); 
+		
+		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+	}
 	
 	
 	@ExceptionHandler({DataIntegrityViolationException.class})
@@ -79,8 +76,7 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 			
 		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-			
-		}
+	}
 	
 	//Se não colocar nada na busca pelo nome
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -92,22 +88,17 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 			
 		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-	
 	}
 	
 	//Exception especial pra PRODUTO. CASO Cadastrar VENDA sem Produto no cadastro
-		@ExceptionHandler({ProdutoNaoExistenteException.class})
-
-		public ResponseEntity<Object> handleProdutoNaoExistenteException(ProdutoNaoExistenteException ex, WebRequest request) {
-			String mensagemUsuario = ms.getMessage("produto.inexistente", null, LocaleContextHolder.getLocale());
-			String mensagemDesenvolvedor = ex.toString(); 
-			
-			List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
-			return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
-			
-		}
-	
+	@ExceptionHandler({ProdutoNaoExistenteException.class})
+	public ResponseEntity<Object> handleProdutoNaoExistenteException(ProdutoNaoExistenteException ex, WebRequest request) {
+		String mensagemUsuario = ms.getMessage("produto.inexistente", null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString(); 
 		
+		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+	}
 	
 			
 	//CASO Cliente não exista no cadastro
@@ -122,15 +113,16 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 	
 	
 	//CADASTRO PRODUTO SEM FORNECEDOR
-		@ExceptionHandler({FornecedorVazioException.class})
-		public ResponseEntity<Object> handleFornecedorVazioException(FornecedorVazioException ex) {
-			String mensagemUsuario = ms.getMessage("fornecedor.vazio", null, LocaleContextHolder.getLocale());
-			String mensagemDesenvolvedor = ex.toString();
-			
-			List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
-			return ResponseEntity.badRequest().body(erros);
-		}
-				
+	@ExceptionHandler({FornecedorVazioException.class})
+	public ResponseEntity<Object> handleFornecedorVazioException(FornecedorVazioException ex) {
+		String mensagemUsuario = ms.getMessage("fornecedor.vazio", null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
+		
+		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		return ResponseEntity.badRequest().body(erros);
+	}
+	
+
 	//CASO FORNECEDOR não exista no cadastro
 	@ExceptionHandler({FornecedorNaoExistenteException.class})
 	public ResponseEntity<Object> handleFornecedorNaoExistenteException(FornecedorNaoExistenteException ex) {
@@ -163,6 +155,7 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 		return ResponseEntity.badRequest().body(erros);
 	}	
 	
+	
 	//Código Produto em Vendas = null
 	@ExceptionHandler({CodigoProdutoNaoIndicadoExecption.class})
 	public ResponseEntity<Object> handleCodigoProdutoNaoIndicadoExecption(CodigoProdutoNaoIndicadoExecption ex) {
@@ -171,8 +164,18 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 		
 		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		return ResponseEntity.badRequest().body(erros);
-	}		
+	}
 	
+	
+	//Código inválido de Cliente PUT
+	@ExceptionHandler({VendaClienteNaoExistenteException.class})
+	public ResponseEntity<Object> handleVendaClienteNaoExistenteException(VendaClienteNaoExistenteException ex) {
+		String mensagemUsuario = ms.getMessage("cliente.inexistente", null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
+		
+		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		return ResponseEntity.badRequest().body(erros);
+	}	
 	
 	
 	//Criando a lista de erros e "bindind" os tipos de erros dentro da lista.
@@ -184,7 +187,6 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 			String mensagemDesenvolvedor = fieldError.toString();
 			erros.add(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		}
-		
 		return erros;
 	}
 		

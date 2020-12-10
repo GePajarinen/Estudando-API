@@ -8,7 +8,6 @@ import com.gft.produtos.api.model.Cliente;
 import com.gft.produtos.api.model.Venda;
 
 public interface VendaRepository  extends JpaRepository<Venda, Long>{
-
 	
 	public List<Venda> findAllByOrderByCodigoAsc();
 	

@@ -138,7 +138,6 @@ public class VendaService {
 			if(f ==null) {
 				throw new FornecedorNaoExistenteException();
 			}
-			
 	}
 
 
@@ -154,7 +153,8 @@ public class VendaService {
 			if(produto.getPromocao()) {
 				total= total.add(produto.getvalorpromo());
 				System.out.println("total " + total);
-			}else {
+			}
+			else {
 				total = total.add(produto.getValor());
 				System.out.println("total " + total);
 			}

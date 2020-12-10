@@ -2,16 +2,15 @@ package com.gft.produtos.api.service;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.gft.produtos.api.model.Cliente;
 import com.gft.produtos.api.repository.ClienteRepository;
+import com.gft.produtos.api.service.exception.VendaClienteNaoExistenteException;
 
 @Service
 public class ClienteService {
 
-	
 	@Autowired
 	private ClienteRepository cr;
 
@@ -29,12 +28,13 @@ public class ClienteService {
 			
 	public Cliente buscarClientePeloCodigo(Long codigo) {
 		Cliente clienteAtualizado = cr.findById(codigo).orElse(null);
+		
+		
 		if (clienteAtualizado == null) {
-			throw new EmptyResultDataAccessException(1);
+			throw new VendaClienteNaoExistenteException();
 		}
 		return clienteAtualizado;
 	}
-	
 	
 }
 

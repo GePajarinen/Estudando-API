@@ -44,7 +44,6 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @RequestMapping("/api/vendas")
 public class VendaResource {
-
 	
 	@Autowired
 	private VendaRepository vr;

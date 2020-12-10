@@ -12,6 +12,7 @@ import com.gft.produtos.api.model.Fornecedormini;
 import com.gft.produtos.api.model.Produto;
 import com.gft.produtos.api.repository.FornecedorRepository;
 import com.gft.produtos.api.repository.FornecedorminiRepository;
+import com.gft.produtos.api.service.exception.FornecedorNaoExistenteException;
 
 @Service
 public class FornecedorService {
@@ -66,6 +67,11 @@ public class FornecedorService {
 		 *Pra não perder a lista de produtos após a atualização.
 		 * */
 		Fornecedor f = fr.findByCodigo(codigo);
+		
+		//Se código do fornecedor não existeno cadastro
+		if(f==null) {
+			throw new FornecedorNaoExistenteException();	
+		}
 		List<Produto> listP = f.getProdutos();
 		fornecedor.setProdutos(listP);
 	}

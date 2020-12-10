@@ -36,7 +36,6 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @RequestMapping("/api/fornecedores")
 public class FornecedorResource {
-
 		
 	@Autowired
 	private FornecedorRepository fr;
@@ -84,8 +83,7 @@ public class FornecedorResource {
 			
 		pub.publishEvent(new RecursoCriadoEvent(this, response, fornecedorSalvo.getCodigo()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(fornecedorSalvo);
-			
-		}
+	}
 		
 		
 	//BUSCAR FORNECEDOR PELO ID
@@ -104,7 +102,6 @@ public class FornecedorResource {
 		Fornecedor fornecedor = fr.findById(codigo).orElse(null);
 		return fornecedor != null ? ResponseEntity.ok(fornecedor) : ResponseEntity.notFound().build();
 	}
-	
 	
 	
 	//ATUALIZAR FORNECEDOR
@@ -127,7 +124,6 @@ public class FornecedorResource {
 			
 		Fornecedor fornecedorAtualizado = fs.atualizar(codigo, fornecedor);
 		return ResponseEntity.ok(fornecedorAtualizado);
-			
 	}
 	
 	
@@ -196,7 +192,7 @@ public class FornecedorResource {
 		if(nome.isPresent()) {
 			return fr.findByNomeContaining(nome.get());
 		}else{
-			return fr.findAll(); //pra não ficar sem return List. Mas vou ver um erro pra isso
+			return fr.findAll(); //pra não ficar sem return List.
 		}
 	}
 	
