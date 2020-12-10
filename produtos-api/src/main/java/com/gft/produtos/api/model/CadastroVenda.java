@@ -23,7 +23,7 @@ public class CadastroVenda {
 	private List<ProdutoListagem> produtos;
 	
 	@NotNull
-	private List<Fornecedormini> fornecedores;
+	private Fornecedormini fornecedor;
 
 	@NotNull
 	@ApiModelProperty(example="2020-12-05")
@@ -56,14 +56,6 @@ public class CadastroVenda {
 		this.codigo = codigo;
 	}
 
-	public List<Fornecedormini> getFornecedores() {
-		return fornecedores;
-	}
-
-	public void setFornecedores(List<Fornecedormini> fornecedores) {
-		this.fornecedores = fornecedores;
-	}
-
 	public LocalDate getDataVenda() {
 		return dataVenda;
 	}
@@ -71,6 +63,16 @@ public class CadastroVenda {
 	public void setDataVenda(LocalDate dataVenda) {
 		this.dataVenda = dataVenda;
 	}
+
+	public Fornecedormini getFornecedor() {
+		return fornecedor;
+	}
+
+	public void setFornecedor(Fornecedormini fornecedor) {
+		this.fornecedor = fornecedor;
+	}
+	
+	
 
 
 }

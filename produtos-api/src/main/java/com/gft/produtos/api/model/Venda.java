@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -50,23 +51,23 @@ public class Venda {
             inverseJoinColumns = @JoinColumn(name = "produtos_codigo"))
 	private List<Produto> produtos;
 	
-	@OneToMany(cascade = CascadeType.PERSIST)
+	@OneToOne(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "venda_fornecedor",
             joinColumns = @JoinColumn(name = "venda_codigo"),
             inverseJoinColumns = @JoinColumn(name = "fornecedor_codigo"))
-	private List<Fornecedormini> fornecedores;
+	private Fornecedormini fornecedor;
 	
 			
 	public Venda() {}
 	
-	public Venda(Long codigo, BigDecimal valor, LocalDate datacompra, @NotNull Cliente cliente, List<Fornecedormini> fornecedores,
+	public Venda(Long codigo, BigDecimal valor, LocalDate datacompra, @NotNull Cliente cliente, Fornecedormini fornecedor,
 			@NotNull List<Produto> produtos) {
 		//super();
 		this.valor = valor;
 		this.datacompra = datacompra;
 		this.cliente = cliente;
-		this.fornecedores = fornecedores;
+		this.fornecedor = fornecedor;
 		this.produtos = produtos;
 	}
 
@@ -104,20 +105,20 @@ public class Venda {
 		this.cliente = cliente;
 	}
 
-	public List<Fornecedormini> getFornecedores() {
-		return fornecedores;
-	}
-
-	public void setFornecedores(List<Fornecedormini> fornecedores) {
-		this.fornecedores = fornecedores;
-	}
-
 	public List<Produto> getProdutos() {
 		return produtos;
 	}
 
 	public void setProdutos(List<Produto> produtos) {
 		this.produtos = produtos;
+	}
+	
+	public Fornecedormini getFornecedor() {
+		return fornecedor;
+	}
+
+	public void setFornecedor(Fornecedormini fornecedor) {
+		this.fornecedor = fornecedor;
 	}
 
 	@Override

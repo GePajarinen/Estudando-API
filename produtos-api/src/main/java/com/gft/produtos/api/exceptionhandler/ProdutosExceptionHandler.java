@@ -24,6 +24,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.gft.produtos.api.service.exception.ClienteNaoIndicadoException;
+import com.gft.produtos.api.service.exception.CodigoProdutoNaoIndicadoExecption;
 import com.gft.produtos.api.service.exception.FornecedorNaoContemProdutoSelecionadoException;
 import com.gft.produtos.api.service.exception.FornecedorNaoExistenteException;
 import com.gft.produtos.api.service.exception.FornecedorVazioException;
@@ -162,7 +163,18 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 		return ResponseEntity.badRequest().body(erros);
 	}	
 	
+	//Código Produto em Vendas = null
+	@ExceptionHandler({CodigoProdutoNaoIndicadoExecption.class})
+	public ResponseEntity<Object> handleCodigoProdutoNaoIndicadoExecption(CodigoProdutoNaoIndicadoExecption ex) {
+		String mensagemUsuario = ms.getMessage("codigo.produto.null", null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
 		
+		List<Erro> erros = Arrays.asList( new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		return ResponseEntity.badRequest().body(erros);
+	}		
+	
+	
+	
 	//Criando a lista de erros e "bindind" os tipos de erros dentro da lista.
 	private List<Erro> criarListaDeErros(BindingResult bindingResult){
 		List<Erro> erros = new ArrayList<>();
@@ -176,7 +188,6 @@ public class ProdutosExceptionHandler extends ResponseEntityExceptionHandler{
 		return erros;
 	}
 		
-
 		
 	//Classe de Erros para usuário e desenvolvedor
 	public static class Erro {

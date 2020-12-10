@@ -39,7 +39,7 @@ public class Cliente {
 	private String senha;
 	
 	@NotBlank
-	@Size(min=8, max=14) 
+	@Size(min=14, max=14) 
 	@ApiModelProperty(example="236.323.326-89")
 	private String documento;
 	

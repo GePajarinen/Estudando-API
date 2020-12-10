@@ -23,8 +23,10 @@ import com.gft.produtos.api.repository.FornecedorminiRepository;
 import com.gft.produtos.api.repository.ProdutoRepository;
 import com.gft.produtos.api.repository.VendaRepository;
 import com.gft.produtos.api.service.exception.ClienteNaoIndicadoException;
+import com.gft.produtos.api.service.exception.CodigoProdutoNaoIndicadoExecption;
 import com.gft.produtos.api.service.exception.FornecedorNaoContemProdutoSelecionadoException;
 import com.gft.produtos.api.service.exception.FornecedorNaoExistenteException;
+import com.gft.produtos.api.service.exception.FornecedorVazioException;
 import com.gft.produtos.api.service.exception.ListaDeProdutosVaziaException;
 import com.gft.produtos.api.service.exception.ProdutoNaoExistenteException;
 import com.gft.produtos.api.service.exception.VendaClienteNaoExistenteException;
@@ -61,6 +63,30 @@ public class VendaService {
 		}
 	}
 	
+		
+	public Venda criarVenda(CadastroVenda cadastroVenda, List<Produto> listaProdutos) {
+		/*
+		 * Instanciar VENDA através do DTO CadastroVenda
+		 * */
+		
+		//Se Cliente.codigo for NULL
+		codigoClienteNull(cadastroVenda.getCliente().getCodigo());
+		
+		Cliente cliente = cr.findByCodigo(cadastroVenda.getCliente().getCodigo());
+		
+		//Se Cliente não consta no cadastro
+		clienteNoCadastro(cliente);
+		
+		BigDecimal  total = somandoValoresProdutos(listaProdutos);
+		
+		Fornecedormini fornecedor = fmr.findByCodigo(cadastroVenda.getFornecedor().getCodigo());
+		
+		Venda venda = new Venda(cadastroVenda.getCodigo(), total, cadastroVenda.getDataVenda(), cliente, fornecedor, listaProdutos);
+		
+		return venda;
+	}
+	
+
 	public Venda atualizar(Long codigo, CadastroVenda cadastroVenda) {
 		Venda vendaAtualizada = buscarVendaPeloCodigo(codigo);
 		
@@ -79,8 +105,11 @@ public class VendaService {
 		List<Produto> newlistP = criarListaProdutos(cadastroVenda);
 		vendaAtualizada.setProdutos(newlistP);
 		
-		List<Fornecedormini> newlistF = listandoFornecedoresmini(newlistP);
-		vendaAtualizada.setFornecedores(newlistF);
+		//Verificando fornecedor
+		temFornecedormini(cadastroVenda.getFornecedor());
+		
+		Fornecedormini f = fmr.findByCodigo(cadastroVenda.getFornecedor().getCodigo());
+		vendaAtualizada.setFornecedor(f);
 		
 		vendaAtualizada.setValor(somandoValoresProdutos(newlistP));
 		
@@ -98,44 +127,18 @@ public class VendaService {
 	}
 
 	
-	public Venda criarVenda(CadastroVenda cadastroVenda, List<Produto> listaProdutos) {
-		/*
-		 * Instanciar VENDA através do DTO CadastroVenda
-		 * */
-		
-		//Se Cliente.codigo for NULL
-		codigoClienteNull(cadastroVenda.getCliente().getCodigo());
-		
-		Cliente cliente = cr.findByCodigo(cadastroVenda.getCliente().getCodigo());
-		
-		//Se Cliente não consta no cadastro
-		clienteNoCadastro(cliente);
-		
-		BigDecimal  total = somandoValoresProdutos(listaProdutos);
-		
-		List<Fornecedormini> listaFornecedores = listandoFornecedoresmini(listaProdutos);
-		
-		Venda venda = new Venda(cadastroVenda.getCodigo(), total, cadastroVenda.getDataVenda(), cliente, listaFornecedores, listaProdutos);
-		
-		return venda;
-	}
-
-
-	private List<Fornecedormini> listandoFornecedoresmini(List<Produto> listaProdutos) {
-		
-		List<Produto> listaDeProdutos = listaProdutos; 
-		List<Fornecedormini> listaFornecedores = new ArrayList<Fornecedormini>();
+	private void temFornecedormini(Fornecedormini fmini) {
 				
-		for (Produto produto : listaDeProdutos) {
-			Fornecedormini mini = fmr.findByCodigo(produto.getFornecedor().getCodigo());
+			if(fmini.getCodigo() == null) {
+				throw new FornecedorVazioException();
+			}
 			
-			if(mini == null) {
+			Fornecedormini f = fmr.findByCodigo(fmini.getCodigo());
+			
+			if(f ==null) {
 				throw new FornecedorNaoExistenteException();
 			}
 			
-			listaFornecedores.add(mini);
-		}
-		return listaFornecedores;
 	}
 
 
@@ -177,16 +180,17 @@ public class VendaService {
 		
 		for(ProdutoListagem n : listagem) {
 			
-			//Se código produto for NULL ou Sem produto
+			//Se código produto for NULL
 			if (n.getCodigo() == null) {
-				throw new EmptyResultDataAccessException(1);
+				throw new CodigoProdutoNaoIndicadoExecption();
 			}
 			
 			Produto p = pr.findByCodigo(n.getCodigo());
 			
 			//Se Produto não consta no cadastro
 			if(p == null) {
-				throw new ProdutoNaoExistenteException(null);
+				throw new ProdutoNaoExistenteException("O Produto de código " +
+						n.getCodigo() + " não existe no cadastro.");
 			}
 			lp.add(p);
 		}
@@ -198,24 +202,23 @@ public class VendaService {
 		/*
 		 * Se Fornecedor indicado na Venda não tem algum dos Produtos da Venda
 		 * */
-		List <Fornecedormini> mini = cadastroVenda.getFornecedores();
 		
-		for(Fornecedormini m : mini) {//Passando por cada fornecedor da lista de venda
-			Fornecedor f = fr.findByCodigo(m.getCodigo());
-			if (f != null) {
-				
-				for(Produto p: listaP) {//Passando por cada produto da lista de venda
-						
-					if(!f.getProdutos().contains(p)) {
-						throw new FornecedorNaoContemProdutoSelecionadoException(
-							"Fornecedor "+ f.getCodigo()+ " não tem o produto: "
-							+ p.getCodigo() );}
-				}
-			}else {//Se fornecedor exite no cadastro.
-				throw new FornecedorNaoExistenteException();
+		temFornecedormini(cadastroVenda.getFornecedor());
+		
+		Fornecedor f = fr.findByCodigo(cadastroVenda.getFornecedor().getCodigo());
+		if (f != null) {
+			for(Produto p: listaP) {//Passando por cada produto da lista de venda
+					
+				if(!f.getProdutos().contains(p)) {
+					throw new FornecedorNaoContemProdutoSelecionadoException(
+						"Fornecedor "+ f.getCodigo()+ " não tem o produto: "
+					+ p.getCodigo() );}
 			}
-			System.out.println("MINI "+ m.getCodigo());
 		}
+		else {//Se fornecedor não exite no cadastro.
+			throw new FornecedorNaoExistenteException();
+		}
+		
 	}
 
 
