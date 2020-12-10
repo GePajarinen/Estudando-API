@@ -169,7 +169,7 @@ public class VendaResource {
 			allowEmptyValue = false, 
 			paramType = "header", 
 			example = "Bearer access_token")
-	@ApiOperation("Listar vendas pelo no do cliente em ordem alfabética crescente")
+	@ApiOperation("Listar vendas pelo nome do cliente em ordem alfabética crescente")
 	@GetMapping("/asc")
 	public List<Venda> ordernarAsc(){
 		
@@ -185,7 +185,7 @@ public class VendaResource {
 			allowEmptyValue = false, 
 			paramType = "header", 
 			example = "Bearer access_token")
-	@ApiOperation("Listar vendas pelo no do cliente em ordem alfabética decrescente")
+	@ApiOperation("Listar vendas pelo nome do cliente em ordem alfabética decrescente")
 	@GetMapping("/desc")
 	public List<Venda> ordernarDesc(){
 		List<Venda> desc = vr.findAll(Sort.by("cliente.nome").descending());
@@ -200,7 +200,7 @@ public class VendaResource {
 			allowEmptyValue = false, 
 			paramType = "header", 
 			example = "Bearer access_token")
-	@ApiOperation("Listar vendas pelo no do cliente em ordem alfabética crescente")
+	@ApiOperation("Buscar vendas pelo nome do cliente")
 	@GetMapping("/nome/{nome}")
 	public @ResponseBody List<Venda> procuraPorNomeCliente(
 			@ApiParam(value="Nome do cliente", example = "Odo") 
