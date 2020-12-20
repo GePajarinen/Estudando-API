@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiModelProperty;
 
 public class CadastroVenda {
@@ -28,10 +30,10 @@ public class CadastroVenda {
 	private Fornecedormini fornecedor;
 
 	@NotNull
-	@ApiModelProperty(example="2020-05-12")
-	//@ApiModelProperty(example="12/05/2020")
+	//@ApiModelProperty(example="2020-05-12")
+	@ApiModelProperty(example="12/05/2020")
 	@Column(name = "data_compra")
-	//@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
 	private LocalDate dataCompra;
 	
 	
