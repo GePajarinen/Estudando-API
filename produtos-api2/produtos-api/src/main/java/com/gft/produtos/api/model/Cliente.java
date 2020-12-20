@@ -44,8 +44,9 @@ public class Cliente {
 	@ApiModelProperty(example="236.323.326-89")
 	private String documento;
 	
-	@ApiModelProperty(example="2020-12-05")
-	@Column(name = "dataCadastro")
+
+	@Column(name = "cadastro")
+	@ApiModelProperty(example = "2020-05-20")
 	private LocalDate dataCadastro;
 
 	

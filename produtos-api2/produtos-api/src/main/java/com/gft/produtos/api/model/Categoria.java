@@ -6,7 +6,7 @@ public enum Categoria {
 	Alimentação,
 	Bebidas,
 	Higiene,
-	Eletrônico,
+	eletronico,
 	Outros
 
 	

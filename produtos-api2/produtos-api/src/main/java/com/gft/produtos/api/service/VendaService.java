@@ -1,11 +1,7 @@
 package com.gft.produtos.api.service;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -84,9 +80,6 @@ public class VendaService {
 		BigDecimal  total = somandoValoresProdutos(listaProdutos);
 		
 		Fornecedormini fornecedor = fmr.findById(cadastroVenda.getFornecedor().getId()).orElse(null);
-		
-		//Convertendo o Formato da DATA:
-		//setDataFormato(cadastroVenda.getDataCompra());
 		
 		Venda venda = new Venda(cadastroVenda.getId(), total, cadastroVenda.getDataCompra(), cliente, fornecedor, listaProdutos);
 		
